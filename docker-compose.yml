@@ -1,0 +1,98 @@
+version: "3.9"
+services:
+  nn1:
+    build: .
+    image: playground/${project_name}:1
+    tty: true
+    hostname: nn1
+    ports:
+      - 3001:9870
+    volumes:
+      - type: bind
+        read_only: true
+        source: ${data_dir}
+        target: /data
+      - type: bind
+        source: ./volumes/nn1
+        target: /nnstore
+  dn1:
+    image: playground/${project_name}:1
+    depends_on:
+      - nn1
+    tty: true
+    hostname: dn1
+    ports:
+      - 3002:9864
+    volumes:
+      - type: bind
+        source: ./volumes/dn1
+        target: /dnstore
+  rman:
+    image: playground/${project_name}:1
+    depends_on:
+      - nn1
+    tty: true
+    hostname: rman
+    ports:
+      - 3000:8088
+  nm1:
+    image: playground/${project_name}:1
+    depends_on:
+      - nn1
+    tty: true
+    hostname: nm1
+    ports:
+      - 3003:8042
+  mrhist:
+    image: playground/${project_name}:1
+    depends_on:
+      - nn1
+    tty: true
+    hostname: mrhist
+    ports:
+      - 3004:19888
+  hs:
+    image: playground/${project_name}:1
+    depends_on:
+      - nn1
+    tty: true
+    hostname: hs
+    volumes:
+      - type: bind
+        source: ./volumes/hs
+        target: /metastore
+  client:
+    image: playground/${project_name}:1
+    depends_on:
+      - nn1
+    tty: true
+    hostname: client
+    environment:
+      - SQL_PWD=myStrong(!)Password
+    volumes:
+      - type: bind
+        source: ./volumes/client
+        target: /src
+  sql:
+    image: mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=myStrong(!)Password
+      - MSSQL_PID=Enterprise
+    hostname: sql
+    ports:
+      - 3005:1433
+    volumes:
+      - type: bind
+        source: ./volumes/sql
+        target: /var/opt/mssql/data
+  sqp:
+    image: playground/${project_name}:1
+    depends_on:
+      - nn1
+    tty: true
+    hostname: sqp
+    volumes:
+      - type: bind
+        source: ./volumes/sqp
+        target: /metastore
