@@ -33,16 +33,16 @@ Place any data files (in subdirectories too if you wish) that should get ingeste
 
 ## Initialize Nodes for first time
 
-The setup script only needs to be run ONCE per project.
+The setup command only needs to be run ONCE per project.
 
 Make sure Docker for Windows is running ([with Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)).
 
 Run the setup process with:
 ```
-./scripts/setup.ps1
+python playground.py setup
 ```
 
-The setup script will interactively prompt you for your project name and your src + data folder locations and set up the `./config.json` file respectively if it hasn't already been set up.
+The python script will interactively prompt you for your project name and your src + data folder locations and set up the `./config.json` file respectively if it hasn't already been set up.
 
 Then, it will attempt to provision the cluster (format hdfs, ingest data, etc).
 
@@ -50,25 +50,25 @@ Then, it will attempt to provision the cluster (format hdfs, ingest data, etc).
 
 When you want to play around with the cluster, run:
 ```
-./scripts/start.ps1
+python playground.py start
 ```
 And when you want to tear down the cluster:
 ```
-./scripts/stop.ps1
+python playground.py stop
 ```
 
 ## Playing in the Playground
 
-Your `src` directory gets copied into 
+Your `src` directory gets copied into (TODO: Finish this section)
 
 ## Destroying the Volumes
 
 If you want to start fresh (delete all the volumes), go ahead and run:
 
 ```
-./scripts/destroy.ps1
+python playground.py destroy-vol
 ```
 And then if you want to reprovision the cluster for more use, run:
 ```
-./scripts/setup.ps1
+python playground.py setup
 ```
