@@ -1,0 +1,1 @@
+/opt/mssql-tools/bin/sqlcmd -S sql -U sa -P $SQL_PWD

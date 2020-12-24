@@ -68,7 +68,9 @@ services:
     tty: true
     hostname: client
     environment:
-      - SQL_PWD=myStrong(!)Password
+      - SQL_PWD=${sql_test_password}
+      - SRC_HOME=/src
+      - SCRIPTS=/himage/helper-scripts
     volumes:
       - type: bind
         source: ./volumes/client
