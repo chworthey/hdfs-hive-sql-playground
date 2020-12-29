@@ -9,6 +9,7 @@ import os
 import re
 import shutil
 import subprocess
+import time
 from tkinter import Tk
 
 # PyPI installed modules...
@@ -408,7 +409,17 @@ def gen_node_health_report(jsn, json_checker_func):
     message = '\u274C Could not fetch metrics from server. Most likely the node is down.'
     return NodeHealthReport(is_healthy=False, message=message)
 
-def gen_health_summary():
+def gen_docker_health_report(config, node_name):
+  """
+  doc str
+  """
+  return_code = exec_docker(config, node_name, 'bash -c exit 0', check=False)
+  if return_code == 0:
+    return NodeHealthReport(is_healthy=True, message='\u2705 Node running')
+  else:
+    return NodeHealthReport(is_healthy=False, message='\u274C Node not running')
+
+def gen_health_summary(config):
   """
   doc str
   """
@@ -418,24 +429,28 @@ def gen_health_summary():
   _nm1 = gen_node_health_report(metric_request(PORT_UI_NM1), json_checker_response_only)
   _mrhist = gen_node_health_report(metric_request(PORT_UI_MRHIST), json_checker_response_only)
   _hs = gen_node_health_report(metric_request(PORT_UI_HS), json_checker_response_only)
-  cluster_healthy = \
+  _client = gen_docker_health_report(config, 'client')
+  _sql = gen_docker_health_report(config, 'sql')
+  _cluster_healthy = \
     _name_node1.is_healthy and \
     _data_node1.is_healthy and \
     _rman.is_healthy and \
     _nm1.is_healthy and \
     _mrhist.is_healthy and \
-    _hs.is_healthy
-    
+    _hs.is_healthy and \
+    _client.is_healthy and \
+    _sql.is_healthy
+
   summary = HealthReportSummary( \
-    cluster_healthy=cluster_healthy, \
+    cluster_healthy=_cluster_healthy, \
     nn1=_name_node1, \
     dn1=_data_node1, \
     rman=_rman, \
     nm1=_nm1, \
     mrhist=_mrhist, \
     hs=_hs, \
-    client=None, \
-    sql=None, \
+    client=_client, \
+    sql=_sql, \
     sqp=None)
   return summary
 
@@ -447,19 +462,16 @@ def print_node_health(report):
     print('? Report not implemented.')
     print()
     return
-  print('Overall Status: %s' % ('\u2705 Healthy' if report.is_healthy else '\u274C Unhealthy'))
+  print('Overall Status:')
+  print('\u2705 Healthy' if report.is_healthy else '\u274C Unhealthy')
   print('Checklist:')
   print(report.message)
   print()
 
-
-def print_health():
+def print_summary(summary):
   """
   doc str
   """
-  print('Checking cluster health.')
-  print()
-  summary = gen_health_summary()
   print('NAME NODE 1')
   print_node_health(summary.nn1)
   print('DATA NODE 1')
@@ -483,6 +495,58 @@ def print_health():
     print('\u2705 Healthy')
   else:
     print('\u274C Unhealthy')
+
+def print_health(config):
+  """
+  doc str
+  """
+  print('Checking cluster health.')
+  print()
+  summary = gen_health_summary(config)
+  print_summary(summary)
+
+def wait_for_healthy_nodes_print(config, timeout):
+  """
+  doc str
+  """
+  _start = time.time()
+  summary = wait_for_healthy_nodes(config, timeout=timeout)
+  print('Wait completed in %fs. Summary:' % (time.time() - _start))
+  print()
+  print_summary(summary)
+
+def get_summary_preview_str(summary):
+  """
+  doc str
+  """
+  _s = [
+    ('nn1', summary.nn1.is_healthy),
+    ('dn1', summary.dn1.is_healthy),
+    ('rman', summary.rman.is_healthy),
+    ('nm1', summary.nm1.is_healthy),
+    ('mrhist', summary.mrhist.is_healthy),
+    ('hs', summary.hs.is_healthy),
+    ('client', summary.client.is_healthy),
+    ('sql', summary.sql.is_healthy),
+    ('sqp', True)
+  ]
+  _s2 = map(lambda a : '%s %s' % \
+    (('\u2705' if a[1] else '\u274C'), a[0]), _s)
+  return ', '.join(_s2)
+
+def wait_for_healthy_nodes(config, timeout=200, interval=5):
+  """
+  doc str
+  """
+  _summary = None
+  for _t in range(int(timeout / interval)):
+    _summary = gen_health_summary(config)
+    if _summary.cluster_healthy:
+      return _summary
+    else:
+      print('...Waiting... ' + get_summary_preview_str(_summary))
+      time.sleep(interval)
+  return _summary
 
 def setup(config):
   """
@@ -521,7 +585,7 @@ def print_port_doc():
     print('Port: %s, Type: %s, Description: %s' % \
       (_p[0], _p[1], _p[2]))
 
-def start(config):
+def start(config, wait=True):
   """
   doc str
   """
@@ -533,6 +597,10 @@ def start(config):
 
   print('Starting Hive Server.')
   start_hive_server(config)
+
+  if wait:
+    print('Starting wait routine.')
+    wait_for_healthy_nodes_print(config, 200)
 
   print_port_doc()
 
@@ -793,7 +861,7 @@ def start_cmd(config, args):
   """
   doc str
   """
-  start(config)
+  start(config, wait=not args.no_wait)
 
 def stop_cmd(config, args):
   """
@@ -872,7 +940,13 @@ def print_health_cmd(config, args):
   """
   doc str
   """
-  print_health()
+  print_health(config)
+
+def wait_for_healthy_nodes_cmd(config, args):
+  """
+  doc str
+  """
+  wait_for_healthy_nodes_print(config, args.timeout)
 
 def get_config_file_needed(args):
   """
@@ -946,7 +1020,9 @@ def main():
   subparsers.add_parser('setup', help='TODO: help').set_defaults(func=setup_cmd)
 
   # start
-  subparsers.add_parser('start', help='TODO: help').set_defaults(func=start_cmd)
+  start_p = subparsers.add_parser('start', help='TODO: help')
+  start_p.add_argument('--no-wait', '-w', action='store_true')
+  start_p.set_defaults(func=start_cmd, no_wait=False)
 
   # stop
   subparsers.add_parser('stop', help='Stops all of the services and shuts down all of the nodes.') \
@@ -1004,6 +1080,12 @@ def main():
   # print-health
   subparsers.add_parser('print-health', help='Prints the cluster health information.') \
     .set_defaults(func=print_health_cmd)
+
+  # wait-for-healthy-nodes
+  wait_p = subparsers.add_parser('wait-for-healthy-nodes', help='Waits until the cluster is ' \
+    'healthy or until timeout.')
+  wait_p.add_argument('--timeout', '-t', help='The time in seconds until command timeout.')
+  wait_p.set_defaults(func=wait_for_healthy_nodes_cmd, timeout=200)
 
   args = parser.parse_args()
   if not args.func:
