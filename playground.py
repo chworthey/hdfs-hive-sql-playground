@@ -11,7 +11,6 @@ import shutil
 import subprocess
 import sys
 import time
-from tkinter import Tk
 
 # PyPI installed modules...
 import requests
@@ -655,10 +654,10 @@ def sqlcmd_cli(config, local):
   doc str
   """
   if local:
-    os.system('sqlcmd -S tcp:localhost,3007 -U sa -P %s' % (SQL_TEST_PASSWORD))
+    os.system('sqlcmd -S tcp:localhost,%d -U sa -P %s' % (PORT_SQL_SQL, SQL_TEST_PASSWORD))
   else:
-    exec_docker(config, 'client', 'sqlcmd -S sql -U sa -P %s' % (SQL_TEST_PASSWORD), \
-      workdir='/src', interactive=True)
+    exec_docker(config, 'client', '/opt/mssql-tools/bin/sqlcmd -S sql -U sa -P %s' % \
+      (SQL_TEST_PASSWORD), workdir='/src', interactive=True)
 
 def launch_ssms_win_local(executable_path):
   """
@@ -666,16 +665,10 @@ def launch_ssms_win_local(executable_path):
   """
   if os.name == 'nt':
     if os.path.exists(executable_path):
-      print('Copying the test SQL server password to the clipboard since we do not care' \
-        ' about security concerns. Paste it when prompted.' \
-      )
-      _r = Tk()
-      _r.withdraw()
-      _r.clipboard_clear()
-      _r.clipboard_append(SQL_TEST_PASSWORD)
-      _r.update()
-      _r.destroy()
-      os.system('%s -U sa -S tcp:localhost,3007' % (executable_path))
+      print('Note: Connection will only succeed if "Remember Password" has been checked in ' \
+        'the SSMS login previously.')
+      print('Use test password: %s' % (SQL_TEST_PASSWORD))
+      os.system('"%s" -S tcp:localhost,%d -U sa' % (executable_path, PORT_SQL_SQL))
     else:
       print('The executable path for ssms does not exist. Please provide the correct one with' \
         ' arg "-f".' \
@@ -898,7 +891,7 @@ def destroy_volumes_cmd(config, args):
   if args.skip_confirm:
     destroy_volumes(config)
     return
-    
+
   result = input_with_validator('Are you sure you want to delete directory "%s" and all of its' \
     ' files? y/n: ' % (config.volumes_dir), \
     'Please use "y" or "n".', \
@@ -937,7 +930,7 @@ def local_sql_info_cmd(config, args):
   """
   doc str
   """
-  print('SERVER NAME: tcp:localhost,3005')
+  print('SERVER NAME: tcp:localhost,%d' % (PORT_SQL_SQL))
   print('AUTHENTICATION: SQL Server AUthentication')
   print('LOGIN: sa')
   print('PASSWORD: %s' % (SQL_TEST_PASSWORD))
@@ -1096,8 +1089,8 @@ def main():
     ' requires installation of SQL Server Management Server. This command launches SQL Server' \
     ' Management Server using the local connection information.')
   launch_ssms_p.add_argument('--executable-path', '-f')
-  launch_ssms_p.set_defaults(func=sqlcmd_cli_cmd, executable_path='C:\\Program Files (x86)\\' \
-    'Microsoft SQL Server Management Studio 18\\Common7\\IDE\\Ssms.exe')
+  launch_ssms_p.set_defaults(func=launch_ssms_win_local_cmd, executable_path= \
+    'C:\\Program Files (x86)\\Microsoft SQL Server Management Studio 18\\Common7\\IDE\\Ssms.exe')
 
   # exec-hive-file
   exec_hive_file_p = subparsers.add_parser('exec-hive-file', help='Executes a hive script from' \
