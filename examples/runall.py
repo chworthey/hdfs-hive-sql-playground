@@ -21,9 +21,11 @@ def main():
   # start fresh each time
   playground.destroy_volumes(config)
   playground.setup(config)
-  playground.start(config)
+  playground.start(config, wait=True)
   playground.exec_hive_file(config, 'hive/create_m33_raw.hql')
   playground.exec_hive_file(config, 'hive/create_m33_schem_view.hql')
+  playground.exec_hive_query(config, 'SELECT * FROM m33_schem LIMIT 100')
+  playground.stop(config)
 
 if __name__ == '__main__':
   main()

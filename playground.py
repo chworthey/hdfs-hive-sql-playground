@@ -9,6 +9,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import time
 from tkinter import Tk
 
@@ -144,7 +145,13 @@ def exec_docker(config, node_name, command, workdir=None, \
   if detached:
     _args.append('-d')
   _args.append('%s_%s_1' % (config.project_name, node_name))
-  _args += command.split(' ')
+  split_spaces = True
+  for _c in command.split('"'):
+    if split_spaces:
+      _args += _c.split(' ')
+    else:
+      _args.append(_c)
+    split_spaces = not split_spaces
   output = subprocess.run(_args, check=check, shell=True)
   return output.returncode
 
@@ -624,6 +631,12 @@ def destroy_volumes(config):
     print('Deleting files.')
     shutil.rmtree(config.volumes_dir)
 
+def print_hadoop_node_logs(config, node_name):
+  """
+  doc str
+  """
+  exec_docker(config, node_name, 'cat %s/logs/*.log')
+
 def beeline_cli(config):
   """
   doc str
@@ -674,8 +687,16 @@ def exec_hive_file(config, src_file):
   """
   doc str
   """
-  exec_docker(config, 'client', '$HIVE_HOME/bin/beeline -u jdbc:hive2://hs:10000 -f %s' % \
-    (src_file))
+  exec_docker(config, 'client', '%s/bin/beeline -u jdbc:hive2://hs:10000 -f %s' % \
+    (HIVE_HOME, src_file), workdir='/src')
+
+def exec_hive_query(config, query):
+  """
+  doc str
+  """
+  #exec_docker(config, 'client', "echo 'Hello world'")
+  exec_docker(config, 'client', '%s/bin/beeline -u jdbc:hive2://hs:10000 -e "%s"' % \
+    (HIVE_HOME, query), workdir='/src')
 
 def exec_sql_file(config, src_file):
   """
@@ -746,6 +767,7 @@ def configure(args):
         print('Config saved.')
       else:
         print('Program needs configuration. Exiting.')
+        sys.exit(1)
         return
     else:
       config = Config.load(_f)
@@ -873,14 +895,10 @@ def destroy_volumes_cmd(config, args):
   """
   doc str
   """
-  if not os.path.exists(config.volumes_dir):
-    print('Volumes directory does not exist. Cannot delete.')
-    return
-
   if args.skip_confirm:
     destroy_volumes(config)
     return
-
+    
   result = input_with_validator('Are you sure you want to delete directory "%s" and all of its' \
     ' files? y/n: ' % (config.volumes_dir), \
     'Please use "y" or "n".', \
@@ -890,6 +908,12 @@ def destroy_volumes_cmd(config, args):
     destroy_volumes(config)
   else:
     print('Cancelling.')
+
+def print_hadoop_node_logs_cmd(config, args):
+  """
+  doc str
+  """
+  print_hadoop_node_logs(config, args.node)
 
 def beeline_cli_cmd(config, args):
   """
@@ -929,6 +953,12 @@ def exec_hive_file_cmd(config, args):
   doc str
   """
   exec_hive_file(config, args.src_path)
+
+def exec_hive_query_cmd(config, args):
+  """
+  doc str
+  """
+  exec_hive_query(config, args.query)
 
 def exec_sql_file_cmd(config, args):
   """
@@ -1033,6 +1063,12 @@ def main():
   destroy_vol_p.add_argument('--skip-confirm', '-y', action='store_true')
   destroy_vol_p.set_defaults(func=destroy_volumes_cmd, skip_confirm=False)
 
+  # print-hadoop-logs
+  print_hadoop_node_logs_p = subparsers.add_parser('print-hadoop-logs', help='Prints the log file' \
+    ' of the specified hadoop node.')
+  print_hadoop_node_logs_p.add_argument('--node', '-n', help='The node to check the logs for.')
+  print_hadoop_node_logs_p.set_defaults(func=print_hadoop_node_logs_cmd)
+
   # beeline-cli
   subparsers.add_parser('beeline-cli', help='TODO: help').set_defaults(func=beeline_cli_cmd)
 
@@ -1069,6 +1105,12 @@ def main():
   exec_hive_file_p.add_argument('--src-path', '-f', help='The relative path to the file on the ' \
     'linux node')
   exec_hive_file_p.set_defaults(func=exec_hive_file_cmd)
+
+  # exec-hive-query
+  exec_hive_query_p = subparsers.add_parser('exec-hive-query', help='Executes a single' \
+    ' hive query.')
+  exec_hive_query_p.add_argument('--query', '-e', help='The hive query string to execute.')
+  exec_hive_query_p.set_defaults(func=exec_hive_query_cmd)
 
   # exec-sql-file
   exec_sql_file_p = subparsers.add_parser('exec-sql-file', help='Executes a sql script from' \

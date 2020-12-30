@@ -1,0 +1,6 @@
+{
+  "project_name": "example",
+  "source_dir": "./src",
+  "data_dir": "./data",
+  "volumes_dir": "./volumes"
+}
