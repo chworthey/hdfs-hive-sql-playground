@@ -81,7 +81,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=myStrong(!)Password
+      - SA_PASSWORD=myStrong(*)Password
       - MSSQL_PID=Enterprise
     hostname: sql
     ports:
@@ -90,13 +90,3 @@ services:
       - type: bind
         source: ${volumes_dir}/sql
         target: /var/opt/mssql/data
-  sqp:
-    image: playground/${project_name}:1
-    depends_on:
-      - nn1
-    tty: true
-    hostname: sqp
-    volumes:
-      - type: bind
-        source: ${volumes_dir}/sqp
-        target: /metastore

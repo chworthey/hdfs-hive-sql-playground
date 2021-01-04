@@ -1,0 +1,1413 @@
+﻿########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" setup -y
+########################################################
+Destroying volumes.
+Spinning cluster down.
+Removing network example_default
+WARNING: Network example_default not found.
+Deleting files.
+Spinning cluster up.
+Creating network "example_default" with the default driver
+Building nn1
+Step 1/10 : FROM centos:latest
+latest: Pulling from library/centos
+7a0437f04f83: Pull complete                                                                                             Digest: sha256:5528e8b1b1719d34604c87e11dcd1c0a20bedf46e83b5632cdeac91b8c04efc1
+Status: Downloaded newer image for centos:latest
+ ---> 300e315adb2f
+Step 2/10 : ADD ./bin /himage
+ ---> b332d459277e
+Step 3/10 : ENV JAVA_HOME=/himage/jdk1.8.0_271
+ ---> Running in 8ad8963d7ca9
+Removing intermediate container 8ad8963d7ca9
+ ---> 96cffd4a0381
+Step 4/10 : ENV HADOOP_HOME=/himage/hadoop-3.3.0
+ ---> Running in 82944ab79b93
+Removing intermediate container 82944ab79b93
+ ---> 12f6be5706cc
+Step 5/10 : ENV HIVE_HOME=/himage/apache-hive-3.1.2-bin
+ ---> Running in b4d98c79ff5b
+Removing intermediate container b4d98c79ff5b
+ ---> 414fc721f0ac
+Step 6/10 : ENV SQOOP_HOME=/himage/sqoop-1.4.7.bin__hadoop-2.6.0
+ ---> Running in 6240b29333e7
+Removing intermediate container 6240b29333e7
+ ---> 7f86d4e100ef
+Step 7/10 : ENV ACCEPT_EULA=Y
+ ---> Running in 5cf5ff146b62
+Removing intermediate container 5cf5ff146b62
+ ---> 85896039a8e4
+Step 8/10 : ENV SQOOP_SERVER_EXTRA_LIB=/himage/sqoop-extras/
+ ---> Running in bcf584e8e13d
+Removing intermediate container bcf584e8e13d
+ ---> 271af9fa21bc
+Step 9/10 : ENV HCAT_HOME=/himage/apache-hive-3.1.2-bin/hcatalog
+ ---> Running in 6f15b9cd9b6e
+Removing intermediate container 6f15b9cd9b6e
+ ---> c265ee01cbf2
+Step 10/10 : RUN chmod +x /himage/install.sh && /himage/install.sh
+ ---> Running in 738904b31f7b
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   192  100   192    0     0    279      0 --:--:-- --:--:-- --:--:--   279
+CentOS Linux 8 - AppStream                      685 kB/s | 6.3 MB     00:09
+CentOS Linux 8 - BaseOS                         863 kB/s | 2.3 MB     00:02
+CentOS Linux 8 - Extras                         9.5 kB/s | 8.6 kB     00:00
+packages-microsoft-com-prod                     4.0 MB/s | 6.7 MB     00:01
+Dependencies resolved.
+================================================================================
+ Package            Arch   Version            Repository                   Size
+================================================================================
+Installing:
+ mssql-tools        x86_64 17.6.1.1-1         packages-microsoft-com-prod 223 k
+ unixODBC-devel     x86_64 2.3.7-1.rh         packages-microsoft-com-prod  42 k
+Installing dependencies:
+ e2fsprogs          x86_64 1.45.6-1.el8       baseos                      1.0 M
+ e2fsprogs-libs     x86_64 1.45.6-1.el8       baseos                      233 k
+ fuse-libs          x86_64 2.9.7-12.el8       baseos                      102 k
+ libpkgconf         x86_64 1.4.2-1.el8        baseos                       35 k
+ libss              x86_64 1.45.6-1.el8       baseos                       53 k
+ msodbcsql17        x86_64 17.6.1.1-1         packages-microsoft-com-prod 788 k
+ openssl            x86_64 1:1.1.1g-11.el8    baseos                      706 k
+ pkgconf            x86_64 1.4.2-1.el8        baseos                       38 k
+ pkgconf-m4         noarch 1.4.2-1.el8        baseos                       17 k
+ pkgconf-pkg-config x86_64 1.4.2-1.el8        baseos                       15 k
+ unixODBC           x86_64 2.3.7-1.rh         packages-microsoft-com-prod 213 k
+
+Transaction Summary
+================================================================================
+Install  13 Packages
+
+Total download size: 3.4 M
+Installed size: 9.4 M
+Downloading Packages:
+(1/13): fuse-libs-2.9.7-12.el8.x86_64.rpm       155 kB/s | 102 kB     00:00
+(2/13): libpkgconf-1.4.2-1.el8.x86_64.rpm       248 kB/s |  35 kB     00:00
+(3/13): libss-1.45.6-1.el8.x86_64.rpm           370 kB/s |  53 kB     00:00
+(4/13): e2fsprogs-libs-1.45.6-1.el8.x86_64.rpm  231 kB/s | 233 kB     00:01
+(5/13): pkgconf-1.4.2-1.el8.x86_64.rpm          280 kB/s |  38 kB     00:00
+(6/13): pkgconf-m4-1.4.2-1.el8.noarch.rpm       246 kB/s |  17 kB     00:00
+(7/13): pkgconf-pkg-config-1.4.2-1.el8.x86_64.r 216 kB/s |  15 kB     00:00
+(8/13): e2fsprogs-1.45.6-1.el8.x86_64.rpm       576 kB/s | 1.0 MB     00:01
+(9/13): openssl-1.1.1g-11.el8.x86_64.rpm        635 kB/s | 706 kB     00:01
+(10/13): mssql-tools-17.6.1.1-1.x86_64.rpm      400 kB/s | 223 kB     00:00
+(11/13): unixODBC-devel-2.3.7-1.rh.x86_64.rpm   477 kB/s |  42 kB     00:00
+(12/13): msodbcsql17-17.6.1.1-1.x86_64.rpm      657 kB/s | 788 kB     00:01
+(13/13): unixODBC-2.3.7-1.rh.x86_64.rpm         480 kB/s | 213 kB     00:00
+--------------------------------------------------------------------------------
+Total                                           1.1 MB/s | 3.4 MB     00:03
+warning: /var/cache/dnf/baseos-f6a80ba95cf937f2/packages/e2fsprogs-1.45.6-1.el8.x86_64.rpm: Header V3 RSA/SHA256 Signature, key ID 8483c65d: NOKEY
+CentOS Linux 8 - BaseOS                         1.6 MB/s | 1.6 kB     00:00
+Importing GPG key 0x8483C65D:
+ Userid     : "CentOS (CentOS Official Signing Key) <security@centos.org>"
+ Fingerprint: 99DB 70FA E1D7 CE22 7FB6 4882 05B5 55B3 8483 C65D
+ From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+Key imported successfully
+warning: /var/cache/dnf/packages-microsoft-com-prod-802165ff87c445fe/packages/msodbcsql17-17.6.1.1-1.x86_64.rpm: Header V4 RSA/SHA256 Signature, key ID be1229cf: NOKEY
+packages-microsoft-com-prod                     3.8 kB/s | 983  B     00:00
+Importing GPG key 0xBE1229CF:
+ Userid     : "Microsoft (Release signing) <gpgsecurity@microsoft.com>"
+ Fingerprint: BC52 8686 B50D 79E3 39D3 721C EB3E 94AD BE12 29CF
+ From       : https://packages.microsoft.com/keys/microsoft.asc
+Key imported successfully
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1
+  Installing       : unixODBC-2.3.7-1.rh.x86_64                            1/13
+  Running scriptlet: unixODBC-2.3.7-1.rh.x86_64                            1/13
+  Installing       : pkgconf-m4-1.4.2-1.el8.noarch                         2/13
+  Installing       : openssl-1:1.1.1g-11.el8.x86_64                        3/13
+  Installing       : libss-1.45.6-1.el8.x86_64                             4/13
+  Running scriptlet: libss-1.45.6-1.el8.x86_64                             4/13
+  Installing       : libpkgconf-1.4.2-1.el8.x86_64                         5/13
+  Installing       : pkgconf-1.4.2-1.el8.x86_64                            6/13
+  Installing       : pkgconf-pkg-config-1.4.2-1.el8.x86_64                 7/13
+  Installing       : fuse-libs-2.9.7-12.el8.x86_64                         8/13
+  Running scriptlet: fuse-libs-2.9.7-12.el8.x86_64                         8/13
+  Installing       : e2fsprogs-libs-1.45.6-1.el8.x86_64                    9/13
+  Running scriptlet: e2fsprogs-libs-1.45.6-1.el8.x86_64                    9/13
+  Installing       : e2fsprogs-1.45.6-1.el8.x86_64                        10/13
+  Running scriptlet: msodbcsql17-17.6.1.1-1.x86_64                        11/13
+  Installing       : msodbcsql17-17.6.1.1-1.x86_64                        11/13
+  Running scriptlet: msodbcsql17-17.6.1.1-1.x86_64                        11/13
+  Running scriptlet: mssql-tools-17.6.1.1-1.x86_64                        12/13
+  Installing       : mssql-tools-17.6.1.1-1.x86_64                        12/13
+  Installing       : unixODBC-devel-2.3.7-1.rh.x86_64                     13/13
+  Running scriptlet: msodbcsql17-17.6.1.1-1.x86_64                        13/13
+  Running scriptlet: unixODBC-devel-2.3.7-1.rh.x86_64                     13/13
+  Verifying        : e2fsprogs-1.45.6-1.el8.x86_64                         1/13
+  Verifying        : e2fsprogs-libs-1.45.6-1.el8.x86_64                    2/13
+  Verifying        : fuse-libs-2.9.7-12.el8.x86_64                         3/13
+  Verifying        : libpkgconf-1.4.2-1.el8.x86_64                         4/13
+  Verifying        : libss-1.45.6-1.el8.x86_64                             5/13
+  Verifying        : openssl-1:1.1.1g-11.el8.x86_64                        6/13
+  Verifying        : pkgconf-1.4.2-1.el8.x86_64                            7/13
+  Verifying        : pkgconf-m4-1.4.2-1.el8.noarch                         8/13
+  Verifying        : pkgconf-pkg-config-1.4.2-1.el8.x86_64                 9/13
+  Verifying        : msodbcsql17-17.6.1.1-1.x86_64                        10/13
+  Verifying        : mssql-tools-17.6.1.1-1.x86_64                        11/13
+  Verifying        : unixODBC-2.3.7-1.rh.x86_64                           12/13
+  Verifying        : unixODBC-devel-2.3.7-1.rh.x86_64                     13/13
+
+Installed:
+  e2fsprogs-1.45.6-1.el8.x86_64            e2fsprogs-libs-1.45.6-1.el8.x86_64
+  fuse-libs-2.9.7-12.el8.x86_64            libpkgconf-1.4.2-1.el8.x86_64
+  libss-1.45.6-1.el8.x86_64                msodbcsql17-17.6.1.1-1.x86_64
+  mssql-tools-17.6.1.1-1.x86_64            openssl-1:1.1.1g-11.el8.x86_64
+  pkgconf-1.4.2-1.el8.x86_64               pkgconf-m4-1.4.2-1.el8.noarch
+  pkgconf-pkg-config-1.4.2-1.el8.x86_64    unixODBC-2.3.7-1.rh.x86_64
+  unixODBC-devel-2.3.7-1.rh.x86_64
+
+Complete!
+Removing intermediate container 738904b31f7b
+ ---> 193339ccc214
+
+Successfully built 193339ccc214
+Successfully tagged playground/example:1
+WARNING: Image for service nn1 was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Pulling sql (mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04)...
+2019-CU8-ubuntu-16.04: Pulling from mssql/server
+4f53fa4d2cf0: Pull complete                                                                                             6af7c939e38e: Pull complete                                                                                             903d0ffd64f6: Pull complete                                                                                             04feeed388b7: Pull complete                                                                                             569779d320a0: Pull complete                                                                                             1786c2b5f9bc: Pull complete                                                                                             a2170271dd64: Pull complete                                                                                             d787e46b8294: Pull complete                                                                                             Digest: sha256:2213437d88b448b820744ac70013d90e1c8e028795cd034eb750722d261d99a5
+Status: Downloaded newer image for mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04
+Creating example_nn1_1 ... done                                                                                         Creating example_dn1_1    ... done                                                                                      Creating example_nm1_1    ... done                                                                                      Creating example_client_1 ... done                                                                                      Creating example_rman_1   ... done                                                                                      Creating example_mrhist_1 ... done                                                                                      Creating example_hs_1     ... done                                                                                      Formatting HDFS.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+2021-01-04 01:04:07,758 INFO namenode.NameNode: STARTUP_MSG:
+/************************************************************
+STARTUP_MSG: Starting NameNode
+STARTUP_MSG:   host = nn1/172.30.0.2
+STARTUP_MSG:   args = [-format, -force, clust]
+STARTUP_MSG:   version = 3.3.0
+STARTUP_MSG:   classpath = /himage/hadoop-3.3.0/etc/hadoop:/himage/hadoop-3.3.0/share/hadoop/common/lib/netty-3.10.6.Final.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jetty-webapp-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-compress-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/curator-framework-4.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerby-util-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/woodstox-core-5.0.3.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/javax.servlet-api-3.1.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerby-pkix-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jackson-core-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/paranamer-2.3.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/httpcore-4.4.10.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-core-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerby-asn1-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/httpclient-4.5.6.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/checker-qual-2.5.2.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-net-3.6.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/log4j-1.2.17.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-lang3-3.7.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/json-smart-2.3.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-admin-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jackson-annotations-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jetty-xml-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/accessors-smart-1.2.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-identity-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-cli-1.2.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/gson-2.2.4.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/j2objc-annotations-1.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/metrics-core-3.2.4.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jettison-1.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/snappy-java-1.0.5.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/zookeeper-3.5.6.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-api-1.7.25.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jackson-core-asl-1.9.13.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jetty-util-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jetty-security-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/avro-1.7.7.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jersey-server-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/re2j-1.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jackson-mapper-asl-1.9.13.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-text-1.4.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/animal-sniffer-annotations-1.17.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jsr305-3.0.2.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/dnsjava-2.1.7.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jackson-xc-1.9.13.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-server-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-codec-1.11.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jackson-jaxrs-1.9.13.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/stax2-api-3.1.4.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jetty-io-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/guava-27.0-jre.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerby-xdr-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jersey-core-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jsp-api-2.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-daemon-1.0.13.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jackson-databind-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/hadoop-auth-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jersey-servlet-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jaxb-api-2.2.11.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-simplekdc-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/audience-annotations-0.5.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jsr311-api-1.1.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/protobuf-java-2.5.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jetty-server-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/hadoop-shaded-protobuf_3_7-1.0.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jul-to-slf4j-1.7.25.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/asm-5.0.4.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-logging-1.1.3.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-crypto-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/failureaccess-1.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-io-2.5.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-math3-3.1.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jersey-json-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jcip-annotations-1.0-1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-beanutils-1.9.4.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/nimbus-jose-jwt-7.9.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-configuration2-2.1.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/htrace-core4-4.1.0-incubating.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jaxb-impl-2.2.3-1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-common-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerby-config-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/curator-client-4.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jetty-http-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-util-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/token-provider-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/kerb-client-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/javax.activation-api-1.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/zookeeper-jute-3.5.6.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/hadoop-annotations-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/curator-recipes-4.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jsch-0.1.55.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/jetty-servlet-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/common/lib/commons-collections-3.2.2.jar:/himage/hadoop-3.3.0/share/hadoop/common/hadoop-common-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/hadoop-common-3.3.0-tests.jar:/himage/hadoop-3.3.0/share/hadoop/common/hadoop-registry-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/hadoop-kms-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/common/hadoop-nfs-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/netty-3.10.6.Final.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-webapp-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-compress-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/curator-framework-4.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerby-util-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/okhttp-2.7.5.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/woodstox-core-5.0.3.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/javax.servlet-api-3.1.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerby-pkix-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jackson-core-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/paranamer-2.3.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/httpcore-4.4.10.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-core-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerby-asn1-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/httpclient-4.5.6.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/checker-qual-2.5.2.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/okio-1.6.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-net-3.6.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/log4j-1.2.17.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-lang3-3.7.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/json-smart-2.3.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-admin-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jackson-annotations-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-xml-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/accessors-smart-1.2.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-identity-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-cli-1.2.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/gson-2.2.4.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/j2objc-annotations-1.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jettison-1.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/snappy-java-1.0.5.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/zookeeper-3.5.6.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jackson-core-asl-1.9.13.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-util-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-security-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/avro-1.7.7.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jersey-server-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/netty-all-4.1.50.Final.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/re2j-1.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jackson-mapper-asl-1.9.13.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-text-1.4.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/json-simple-1.1.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/animal-sniffer-annotations-1.17.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jsr305-3.0.2.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/leveldbjni-all-1.8.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/dnsjava-2.1.7.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jackson-xc-1.9.13.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-server-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-codec-1.11.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jackson-jaxrs-1.9.13.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/stax2-api-3.1.4.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-io-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/guava-27.0-jre.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerby-xdr-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jersey-core-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-daemon-1.0.13.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jackson-databind-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/hadoop-auth-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jersey-servlet-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jaxb-api-2.2.11.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-simplekdc-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/audience-annotations-0.5.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jsr311-api-1.1.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/protobuf-java-2.5.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-server-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/hadoop-shaded-protobuf_3_7-1.0.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/asm-5.0.4.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-logging-1.1.3.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-crypto-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/failureaccess-1.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-io-2.5.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-math3-3.1.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jersey-json-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jcip-annotations-1.0-1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-beanutils-1.9.4.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/nimbus-jose-jwt-7.9.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-configuration2-2.1.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/htrace-core4-4.1.0-incubating.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jaxb-impl-2.2.3-1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-common-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerby-config-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/curator-client-4.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-http-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-util-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/token-provider-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/kerb-client-1.0.1.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/javax.activation-api-1.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/zookeeper-jute-3.5.6.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/hadoop-annotations-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/curator-recipes-4.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jsch-0.1.55.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-util-ajax-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/jetty-servlet-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/lib/commons-collections-3.2.2.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-client-3.3.0-tests.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-nfs-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-client-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-native-client-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-native-client-3.3.0-tests.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-httpfs-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-rbf-3.3.0-tests.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-rbf-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/hdfs/hadoop-hdfs-3.3.0-tests.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-3.3.0-tests.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-core-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-uploader-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-plugins-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-app-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-shuffle-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-nativetask-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/mapreduce/hadoop-mapreduce-client-common-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jna-5.2.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/mssql-jdbc-6.2.1.jre7.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/websocket-api-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jetty-client-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/aopalliance-1.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/HikariCP-java7-2.4.12.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/swagger-annotations-1.5.4.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/javax-websocket-client-impl-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/json-io-2.5.1.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jline-3.9.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/javax.websocket-client-api-1.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/bcprov-jdk15on-1.60.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/snakeyaml-1.16.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jetty-annotations-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jakarta.activation-api-1.2.1.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/guice-4.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/asm-commons-7.1.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/websocket-client-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/metrics-core-3.2.4.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/asm-tree-7.1.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/websocket-common-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jakarta.xml.bind-api-2.3.2.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/websocket-servlet-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/websocket-server-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jersey-guice-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/java-util-1.9.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/guice-servlet-4.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/fst-2.50.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jetty-plus-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/ehcache-3.3.1.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jersey-client-1.19.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jackson-module-jaxb-annotations-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/javax-websocket-server-impl-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/bcpkix-jdk15on-1.60.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jackson-jaxrs-json-provider-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/objenesis-2.6.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/geronimo-jcache_1.0_spec-1.0-alpha-1.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/javax.websocket-api-1.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/asm-analysis-7.1.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jackson-jaxrs-base-2.10.3.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/jetty-jndi-9.4.20.v20190813.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/lib/javax.inject-1.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-registry-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-timeline-pluginstorage-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-sharedcachemanager-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-common-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-api-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-common-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-nodemanager-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-applications-mawo-core-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-client-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-services-core-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-web-proxy-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-services-api-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-applications-unmanaged-am-launcher-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-applications-distributedshell-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-router-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-applicationhistoryservice-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-tests-3.3.0.jar:/himage/hadoop-3.3.0/share/hadoop/yarn/hadoop-yarn-server-resourcemanager-3.3.0.jar
+STARTUP_MSG:   build = https://gitbox.apache.org/repos/asf/hadoop.git -r aa96f1871bfd858f9bac59cf2a81ec470da649af; compiled by 'brahma' on 2020-07-06T18:44Z
+STARTUP_MSG:   java = 1.8.0_271
+************************************************************/
+2021-01-04 01:04:07,771 INFO namenode.NameNode: registered UNIX signal handlers for [TERM, HUP, INT]
+2021-01-04 01:04:07,902 INFO namenode.NameNode: createNameNode [-format, -force, clust]
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /himage/hadoop-3.3.0/lib/native/libhadoop.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+2021-01-04 01:04:08,085 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2021-01-04 01:04:08,634 INFO common.Util: Assuming 'file' scheme for path /nnstore in configuration.
+2021-01-04 01:04:08,636 INFO common.Util: Assuming 'file' scheme for path /nnstore in configuration.
+2021-01-04 01:04:08,647 INFO namenode.NameNode: Formatting using clusterid: CID-24f2de60-36e8-43a7-8d05-2e160ad7f2b4
+2021-01-04 01:04:08,703 INFO namenode.FSEditLog: Edit logging is async:true
+2021-01-04 01:04:08,744 INFO namenode.FSNamesystem: KeyProvider: null
+2021-01-04 01:04:08,746 INFO namenode.FSNamesystem: fsLock is fair: true
+2021-01-04 01:04:08,746 INFO namenode.FSNamesystem: Detailed lock hold time metrics enabled: false
+2021-01-04 01:04:08,755 INFO namenode.FSNamesystem: fsOwner                = root (auth:SIMPLE)
+2021-01-04 01:04:08,755 INFO namenode.FSNamesystem: supergroup             = supergroup
+2021-01-04 01:04:08,756 INFO namenode.FSNamesystem: isPermissionEnabled    = true
+2021-01-04 01:04:08,756 INFO namenode.FSNamesystem: isStoragePolicyEnabled = true
+2021-01-04 01:04:08,756 INFO namenode.FSNamesystem: HA Enabled: false
+2021-01-04 01:04:08,831 INFO common.Util: dfs.datanode.fileio.profiling.sampling.percentage set to 0. Disabling file IO profiling
+2021-01-04 01:04:08,848 INFO blockmanagement.DatanodeManager: dfs.block.invalidate.limit: configured=1000, counted=60, effected=1000
+2021-01-04 01:04:08,848 INFO blockmanagement.DatanodeManager: dfs.namenode.datanode.registration.ip-hostname-check=true
+2021-01-04 01:04:08,853 INFO blockmanagement.BlockManager: dfs.namenode.startup.delay.block.deletion.sec is set to 000:00:00:00.000
+2021-01-04 01:04:08,854 INFO blockmanagement.BlockManager: The block deletion will start around 2021 Jan 04 01:04:08
+2021-01-04 01:04:08,857 INFO util.GSet: Computing capacity for map BlocksMap
+2021-01-04 01:04:08,857 INFO util.GSet: VM type       = 64-bit
+2021-01-04 01:04:08,860 INFO util.GSet: 2.0% max memory 2.7 GB = 56.3 MB
+2021-01-04 01:04:08,860 INFO util.GSet: capacity      = 2^23 = 8388608 entries
+2021-01-04 01:04:08,871 INFO blockmanagement.BlockManager: Storage policy satisfier is disabled
+2021-01-04 01:04:08,872 INFO blockmanagement.BlockManager: dfs.block.access.token.enable = false
+2021-01-04 01:04:08,883 INFO blockmanagement.BlockManagerSafeMode: dfs.namenode.safemode.threshold-pct = 0.999
+2021-01-04 01:04:08,884 INFO blockmanagement.BlockManagerSafeMode: dfs.namenode.safemode.min.datanodes = 0
+2021-01-04 01:04:08,884 INFO blockmanagement.BlockManagerSafeMode: dfs.namenode.safemode.extension = 30000
+2021-01-04 01:04:08,885 INFO blockmanagement.BlockManager: defaultReplication         = 1
+2021-01-04 01:04:08,885 INFO blockmanagement.BlockManager: maxReplication             = 512
+2021-01-04 01:04:08,885 INFO blockmanagement.BlockManager: minReplication             = 1
+2021-01-04 01:04:08,885 INFO blockmanagement.BlockManager: maxReplicationStreams      = 2
+2021-01-04 01:04:08,885 INFO blockmanagement.BlockManager: redundancyRecheckInterval  = 3000ms
+2021-01-04 01:04:08,886 INFO blockmanagement.BlockManager: encryptDataTransfer        = false
+2021-01-04 01:04:08,886 INFO blockmanagement.BlockManager: maxNumBlocksToLog          = 1000
+2021-01-04 01:04:08,921 INFO namenode.FSDirectory: GLOBAL serial map: bits=29 maxEntries=536870911
+2021-01-04 01:04:08,921 INFO namenode.FSDirectory: USER serial map: bits=24 maxEntries=16777215
+2021-01-04 01:04:08,921 INFO namenode.FSDirectory: GROUP serial map: bits=24 maxEntries=16777215
+2021-01-04 01:04:08,921 INFO namenode.FSDirectory: XATTR serial map: bits=24 maxEntries=16777215
+2021-01-04 01:04:08,940 INFO util.GSet: Computing capacity for map INodeMap
+2021-01-04 01:04:08,940 INFO util.GSet: VM type       = 64-bit
+2021-01-04 01:04:08,940 INFO util.GSet: 1.0% max memory 2.7 GB = 28.1 MB
+2021-01-04 01:04:08,940 INFO util.GSet: capacity      = 2^22 = 4194304 entries
+2021-01-04 01:04:08,992 INFO namenode.FSDirectory: ACLs enabled? true
+2021-01-04 01:04:08,992 INFO namenode.FSDirectory: POSIX ACL inheritance enabled? true
+2021-01-04 01:04:08,992 INFO namenode.FSDirectory: XAttrs enabled? true
+2021-01-04 01:04:08,993 INFO namenode.NameNode: Caching file names occurring more than 10 times
+2021-01-04 01:04:09,000 INFO snapshot.SnapshotManager: Loaded config captureOpenFiles: false, skipCaptureAccessTimeOnlyChange: false, snapshotDiffAllowSnapRootDescendant: true, maxSnapshotLimit: 65536
+2021-01-04 01:04:09,003 INFO snapshot.SnapshotManager: SkipList is disabled
+2021-01-04 01:04:09,011 INFO util.GSet: Computing capacity for map cachedBlocks
+2021-01-04 01:04:09,011 INFO util.GSet: VM type       = 64-bit
+2021-01-04 01:04:09,011 INFO util.GSet: 0.25% max memory 2.7 GB = 7.0 MB
+2021-01-04 01:04:09,011 INFO util.GSet: capacity      = 2^20 = 1048576 entries
+2021-01-04 01:04:09,024 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.window.num.buckets = 10
+2021-01-04 01:04:09,025 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.num.users = 10
+2021-01-04 01:04:09,025 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.windows.minutes = 1,5,25
+2021-01-04 01:04:09,031 INFO namenode.FSNamesystem: Retry cache on namenode is enabled
+2021-01-04 01:04:09,031 INFO namenode.FSNamesystem: Retry cache will use 0.03 of total heap and retry cache entry expiry time is 600000 millis
+2021-01-04 01:04:09,034 INFO util.GSet: Computing capacity for map NameNodeRetryCache
+2021-01-04 01:04:09,035 INFO util.GSet: VM type       = 64-bit
+2021-01-04 01:04:09,035 INFO util.GSet: 0.029999999329447746% max memory 2.7 GB = 864.6 KB
+2021-01-04 01:04:09,035 INFO util.GSet: capacity      = 2^17 = 131072 entries
+2021-01-04 01:04:09,084 INFO namenode.FSImage: Allocated new BlockPoolId: BP-1302065487-172.30.0.2-1609722249072
+2021-01-04 01:04:09,123 INFO common.Storage: Storage directory /nnstore has been successfully formatted.
+2021-01-04 01:04:09,164 INFO namenode.FSImageFormatProtobuf: Saving image file /nnstore/current/fsimage.ckpt_0000000000000000000 using no compression
+2021-01-04 01:04:09,342 INFO namenode.FSImageFormatProtobuf: Image file /nnstore/current/fsimage.ckpt_0000000000000000000 of size 399 bytes saved in 0 seconds .
+2021-01-04 01:04:09,398 INFO namenode.NNStorageRetentionManager: Going to retain 1 images with txid >= 0
+2021-01-04 01:04:09,421 INFO namenode.FSImage: FSImageSaver clean checkpoint: txid=0 when meet shutdown.
+2021-01-04 01:04:09,422 INFO namenode.NameNode: SHUTDOWN_MSG:
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at nn1/172.30.0.2
+************************************************************/
+Starting Hadoop Daemons.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+Setting up Hive server.
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /himage/hadoop-3.3.0/lib/native/libhadoop.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+2021-01-04 01:04:27,604 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+mkdir: `/tmp': File exists
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /himage/hadoop-3.3.0/lib/native/libhadoop.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+2021-01-04 01:04:31,452 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /himage/hadoop-3.3.0/lib/native/libhadoop.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+2021-01-04 01:04:34,475 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /himage/hadoop-3.3.0/lib/native/libhadoop.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+2021-01-04 01:04:36,991 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/himage/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Metastore connection URL:        jdbc:derby:;databaseName=metastore_db;create=true
+Metastore Connection Driver :    org.apache.derby.jdbc.EmbeddedDriver
+Metastore connection User:       APP
+Starting metastore schema initialization to 3.1.0
+Initialization script hive-schema-3.1.0.derby.sql
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Initialization script completed
+schemaTool completed
+Ingesting configured data volume into HDFS (this could take some time).
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /himage/hadoop-3.3.0/lib/native/libhadoop.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+2021-01-04 01:04:50,078 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Copying configured source folder to the client node volume.
+Source files copied to volume.
+Spinning cluster down.
+Stopping example_hs_1     ... done                                                                                      Stopping example_client_1 ... done                                                                                      Stopping example_nm1_1    ... done                                                                                      Stopping example_mrhist_1 ... done                                                                                      Stopping example_rman_1   ... done                                                                                      Stopping example_dn1_1    ... done                                                                                      Stopping example_nn1_1    ... done                                                                                      Stopping example_sql_1    ... done                                                                                      Removing example_hs_1     ... done                                                                                      Removing example_client_1 ... done                                                                                      Removing example_nm1_1    ... done                                                                                      Removing example_mrhist_1 ... done                                                                                      Removing example_rman_1   ... done                                                                                      Removing example_dn1_1    ... done                                                                                      Removing example_nn1_1    ... done                                                                                      Removing example_sql_1    ... done                                                                                      Removing network example_default
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" start
+########################################################
+Spinning cluster up.
+Creating network "example_default" with the default driver
+Creating example_nn1_1 ... done                                                                                         Creating example_sql_1 ... done                                                                                         Creating example_dn1_1    ... done                                                                                      Creating example_hs_1     ... done                                                                                      Creating example_mrhist_1 ... done                                                                                      Creating example_rman_1   ... done                                                                                      Creating example_client_1 ... done                                                                                      Creating example_nm1_1    ... done                                                                                      Starting Hadoop Daemons.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+WARNING: /himage/hadoop-3.3.0/logs does not exist. Creating.
+Starting Hive Server.
+Starting wait routine.
+...Waiting... ✅ nn1, ✅ dn1, ❌ rman, ✅ nm1, ❌ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ❌ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+...Waiting... ✅ nn1, ✅ dn1, ✅ rman, ✅ nm1, ✅ mrhist, ❌ hs, ✅ client, ✅ sql
+Wait completed in 165.432698s. Summary:
+
+NAME NODE 1
+Overall Status:
+✅ Healthy
+Checklist:
+✅ Startup completed.
+✅ Namenode active.
+✅ No missing blocks.
+✅ Sufficient disk space.
+✅ All data nodes are connected.
+✅ No stale data nodes.
+
+DATA NODE 1
+Overall Status:
+✅ Healthy
+Checklist:
+✅ Sufficient disk space.
+✅ No failed volumes.
+
+RESOURCE MANAGER
+Overall Status:
+✅ Healthy
+Checklist:
+✅ All node managers connected.
+✅ All node managers are healthy.
+
+NODE MANAGER 1
+Overall Status:
+✅ Healthy
+Checklist:
+✅ Response has expected json.
+
+MAP REDUCE HISTORY SERVER
+Overall Status:
+✅ Healthy
+Checklist:
+✅ Response has expected json.
+
+HIVE SERVER
+Overall Status:
+✅ Healthy
+Checklist:
+✅ Response has expected json.
+
+CLIENT NODE
+Overall Status:
+✅ Healthy
+Checklist:
+✅ Node running
+
+SQL SERVER
+Overall Status:
+✅ Healthy
+Checklist:
+✅ Node running
+
+OVERALL CLUSTER HEALTH
+✅ Healthy
+Exposed ports on localhost:
+Port: 3000, Type: http, Description: Web UI for the primary name node
+Port: 3001, Type: http, Description: Web UI for data node 1
+Port: 3002, Type: http, Description: Web UI for YARN resource manager
+Port: 3003, Type: http, Description: Web UI for node manager 1
+Port: 3004, Type: http, Description: Web UI map reduce history server
+Port: 3005, Type: http, Description: Web UI for hive server
+Port: 3006, Type: sql (tcp/ip), Description: SQL server connection port
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" exec-hive-file -f "hive/create_m33_raw_ext_tbl.hql"
+########################################################
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/himage/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://hs:10000
+Connected to: Apache Hive (version 3.1.2)
+Driver: Hive JDBC (version 3.1.2)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://hs:10000> CREATE EXTERNAL TABLE m33_raw (row_str STRING)
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   COMMENT 'This is a comment'
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   PARTITIONED BY (peculiarity STRING)
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   ROW FORMAT DELIMITED
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   STORED AS TEXTFILE
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   TBLPROPERTIES ("skip.header.line.count"="3");
+INFO  : Compiling command(queryId=root_20210104010812_9e1b7709-cbb2-4937-bd81-009f52764949): CREATE EXTERNAL TABLE m33_raw (row_str STRING)
+COMMENT 'This is a comment'
+PARTITIONED BY (peculiarity STRING)
+ROW FORMAT DELIMITED
+STORED AS TEXTFILE
+TBLPROPERTIES ("skip.header.line.count"="3")
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=root_20210104010812_9e1b7709-cbb2-4937-bd81-009f52764949); Time taken: 1.637 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=root_20210104010812_9e1b7709-cbb2-4937-bd81-009f52764949): CREATE EXTERNAL TABLE m33_raw (row_str STRING)
+COMMENT 'This is a comment'
+PARTITIONED BY (peculiarity STRING)
+ROW FORMAT DELIMITED
+STORED AS TEXTFILE
+TBLPROPERTIES ("skip.header.line.count"="3")
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=root_20210104010812_9e1b7709-cbb2-4937-bd81-009f52764949); Time taken: 0.574 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (2.501 seconds)
+0: jdbc:hive2://hs:10000>
+0: jdbc:hive2://hs:10000>
+0: jdbc:hive2://hs:10000>
+0: jdbc:hive2://hs:10000> ALTER TABLE m33_raw
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   ADD PARTITION (peculiarity = 'cp')
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   LOCATION '/data/m33_0.01/cp';
+INFO  : Compiling command(queryId=root_20210104010815_64d569b3-d9f9-4e6f-9434-0fae812590b7): ALTER TABLE m33_raw
+ADD PARTITION (peculiarity = 'cp')
+LOCATION '/data/m33_0.01/cp'
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=root_20210104010815_64d569b3-d9f9-4e6f-9434-0fae812590b7); Time taken: 0.426 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=root_20210104010815_64d569b3-d9f9-4e6f-9434-0fae812590b7): ALTER TABLE m33_raw
+ADD PARTITION (peculiarity = 'cp')
+LOCATION '/data/m33_0.01/cp'
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=root_20210104010815_64d569b3-d9f9-4e6f-9434-0fae812590b7); Time taken: 0.314 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (0.77 seconds)
+0: jdbc:hive2://hs:10000>
+0: jdbc:hive2://hs:10000>
+0: jdbc:hive2://hs:10000>
+0: jdbc:hive2://hs:10000> ALTER TABLE m33_raw
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   ADD PARTITION (peculiarity = 'nocp')
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   LOCATION '/data/m33_0.01/nocp';
+INFO  : Compiling command(queryId=root_20210104010816_b0ab9da3-efc6-4297-81e6-4fcfb74b4a0a): ALTER TABLE m33_raw
+ADD PARTITION (peculiarity = 'nocp')
+LOCATION '/data/m33_0.01/nocp'
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=root_20210104010816_b0ab9da3-efc6-4297-81e6-4fcfb74b4a0a); Time taken: 0.055 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=root_20210104010816_b0ab9da3-efc6-4297-81e6-4fcfb74b4a0a): ALTER TABLE m33_raw
+ADD PARTITION (peculiarity = 'nocp')
+LOCATION '/data/m33_0.01/nocp'
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=root_20210104010816_b0ab9da3-efc6-4297-81e6-4fcfb74b4a0a); Time taken: 0.078 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (0.158 seconds)
+0: jdbc:hive2://hs:10000> Closing: 0: jdbc:hive2://hs:10000
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" exec-hive-file -f "hive/create_m33_schem_view.hql"
+########################################################
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/himage/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://hs:10000
+Connected to: Apache Hive (version 3.1.2)
+Driver: Hive JDBC (version 3.1.2)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+eculiar)hive2://hs:10000> CREATE VIEW m33_schem (age_mil, wavelength, flam, is_p
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   AS
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   SELECT
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >     cast(cleaned_data.age AS BIGINT),
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >     cast(cleaned_data.data[0] AS DOUBLE),
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >     cast(cleaned_data.data[1] AS DOUBLE),
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >     cleaned_data.is_peculiar
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   FROM (
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >     SELECT
+. . . . . . . . . . . . >
+d*)', 2) AS age,  . . . >       regexp_extract(INPUT__FILE__NAME, '(hmix\\.a)(\\
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >       split(trim(row_str), '  ') AS data,
+. . . . . . . . . . . . >
+iar . . . . . . . . . . >       field(peculiarity, 'nocp', 'cp') - 1 AS is_pecul
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >     FROM m33_raw
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   ) cleaned_data;
+INFO  : Compiling command(queryId=root_20210104010822_d22dd346-ad3b-41e2-a98c-c80b75ae9f20): CREATE VIEW m33_schem (age_mil, wavelength, flam, is_peculiar)
+AS
+SELECT
+cast(cleaned_data.age AS BIGINT),
+cast(cleaned_data.data[0] AS DOUBLE),
+cast(cleaned_data.data[1] AS DOUBLE),
+cleaned_data.is_peculiar
+FROM (
+SELECT
+regexp_extract(INPUT__FILE__NAME, '(hmix\\.a)(\\d*)', 2) AS age,
+split(trim(row_str), '  ') AS data,
+field(peculiarity, 'nocp', 'cp') - 1 AS is_peculiar
+FROM m33_raw
+) cleaned_data
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:_c0, type:bigint, comment:null), FieldSchema(name:_c1, type:double, comment:null), FieldSchema(name:_c2, type:double, comment:null), FieldSchema(name:is_peculiar, type:int, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=root_20210104010822_d22dd346-ad3b-41e2-a98c-c80b75ae9f20); Time taken: 2.424 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=root_20210104010822_d22dd346-ad3b-41e2-a98c-c80b75ae9f20): CREATE VIEW m33_schem (age_mil, wavelength, flam, is_peculiar)
+AS
+SELECT
+cast(cleaned_data.age AS BIGINT),
+cast(cleaned_data.data[0] AS DOUBLE),
+cast(cleaned_data.data[1] AS DOUBLE),
+cleaned_data.is_peculiar
+FROM (
+SELECT
+regexp_extract(INPUT__FILE__NAME, '(hmix\\.a)(\\d*)', 2) AS age,
+split(trim(row_str), '  ') AS data,
+field(peculiarity, 'nocp', 'cp') - 1 AS is_peculiar
+FROM m33_raw
+) cleaned_data
+INFO  : Starting task [Stage-1:DDL] in serial mode
+INFO  : Completed executing command(queryId=root_20210104010822_d22dd346-ad3b-41e2-a98c-c80b75ae9f20); Time taken: 0.054 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (2.55 seconds)
+0: jdbc:hive2://hs:10000> Closing: 0: jdbc:hive2://hs:10000
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" exec-hive-query -e "SELECT * FROM m33_schem LIMIT 100"
+########################################################
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/himage/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://hs:10000
+Connected to: Apache Hive (version 3.1.2)
+Driver: Hive JDBC (version 3.1.2)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+INFO  : Compiling command(queryId=root_20210104010829_f26699a1-deff-49f0-9175-e857288b13b2): SELECT * FROM m33_schem LIMIT 100
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:m33_schem.age_mil, type:bigint, comment:null), FieldSchema(name:m33_schem.wavelength, type:double, comment:null), FieldSchema(name:m33_schem.flam, type:double, comment:null), FieldSchema(name:m33_schem.is_peculiar, type:int, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=root_20210104010829_f26699a1-deff-49f0-9175-e857288b13b2); Time taken: 0.757 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=root_20210104010829_f26699a1-deff-49f0-9175-e857288b13b2): SELECT * FROM m33_schem LIMIT 100
+INFO  : Completed executing command(queryId=root_20210104010829_f26699a1-deff-49f0-9175-e857288b13b2); Time taken: 0.001 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
++--------------------+-----------------------+-----------------+------------------------+
+| m33_schem.age_mil  | m33_schem.wavelength  | m33_schem.flam  | m33_schem.is_peculiar  |
++--------------------+-----------------------+-----------------+------------------------+
+| 11                 | 3000.0                | 482983.6        | 1                      |
+| 11                 | 3000.01               | 482931.5        | 1                      |
+| 11                 | 3000.02               | 482872.7        | 1                      |
+| 11                 | 3000.03               | 482805.8        | 1                      |
+| 11                 | 3000.04               | 482731.6        | 1                      |
+| 11                 | 3000.05               | 482649.8        | 1                      |
+| 11                 | 3000.06               | 482560.0        | 1                      |
+| 11                 | 3000.07               | 482462.3        | 1                      |
+| 11                 | 3000.08               | 482357.7        | 1                      |
+| 11                 | 3000.09               | 482245.4        | 1                      |
+| 11                 | 3000.1                | 482125.8        | 1                      |
+| 11                 | 3000.11               | 481998.6        | 1                      |
+| 11                 | 3000.12               | 481864.5        | 1                      |
+| 11                 | 3000.13               | 481723.4        | 1                      |
+| 11                 | 3000.14               | 481575.3        | 1                      |
+| 11                 | 3000.15               | 481421.0        | 1                      |
+| 11                 | 3000.16               | 481259.9        | 1                      |
+| 11                 | 3000.17               | 481092.9        | 1                      |
+| 11                 | 3000.18               | 480919.8        | 1                      |
+| 11                 | 3000.19               | 480741.4        | 1                      |
+| 11                 | 3000.2                | 480557.5        | 1                      |
+| 11                 | 3000.21               | 480369.3        | 1                      |
+| 11                 | 3000.22               | 480176.2        | 1                      |
+| 11                 | 3000.23               | 479979.1        | 1                      |
+| 11                 | 3000.24               | 479778.2        | 1                      |
+| 11                 | 3000.25               | 479574.0        | 1                      |
+| 11                 | 3000.26               | 479366.9        | 1                      |
+| 11                 | 3000.27               | 479157.4        | 1                      |
+| 11                 | 3000.28               | 478945.6        | 1                      |
+| 11                 | 3000.29               | 478732.2        | 1                      |
+| 11                 | 3000.3                | 478517.8        | 1                      |
+| 11                 | 3000.31               | 478303.0        | 1                      |
+| 11                 | 3000.32               | 478087.4        | 1                      |
+| 11                 | 3000.33               | 477872.1        | 1                      |
+| 11                 | 3000.34               | 477658.1        | 1                      |
+| 11                 | 3000.35               | 477445.4        | 1                      |
+| 11                 | 3000.36               | 477234.7        | 1                      |
+| 11                 | 3000.37               | 477026.2        | 1                      |
+| 11                 | 3000.38               | 476820.3        | 1                      |
+| 11                 | 3000.39               | 476618.3        | 1                      |
+| 11                 | 3000.4                | 476419.8        | 1                      |
+| 11                 | 3000.41               | 476225.2        | 1                      |
+| 11                 | 3000.42               | 476035.2        | 1                      |
+| 11                 | 3000.43               | 475850.2        | 1                      |
+| 11                 | 3000.44               | 475670.4        | 1                      |
+| 11                 | 3000.45               | 475496.0        | 1                      |
+| 11                 | 3000.46               | 475327.6        | 1                      |
+| 11                 | 3000.47               | 475165.4        | 1                      |
+| 11                 | 3000.48               | 475009.8        | 1                      |
+| 11                 | 3000.49               | 474860.6        | 1                      |
+| 11                 | 3000.5                | 474718.8        | 1                      |
+| 11                 | 3000.51               | 474583.9        | 1                      |
+| 11                 | 3000.52               | 474456.1        | 1                      |
+| 11                 | 3000.53               | 474335.8        | 1                      |
+| 11                 | 3000.54               | 474223.1        | 1                      |
+| 11                 | 3000.55               | 474117.4        | 1                      |
+| 11                 | 3000.56               | 474019.7        | 1                      |
+| 11                 | 3000.57               | 473929.1        | 1                      |
+| 11                 | 3000.58               | 473846.2        | 1                      |
+| 11                 | 3000.59               | 473770.4        | 1                      |
+| 11                 | 3000.6                | 473702.6        | 1                      |
+| 11                 | 3000.61               | 473641.2        | 1                      |
+| 11                 | 3000.62               | 473587.0        | 1                      |
+| 11                 | 3000.63               | 473539.0        | 1                      |
+| 11                 | 3000.64               | 473497.8        | 1                      |
+| 11                 | 3000.65               | 473462.5        | 1                      |
+| 11                 | 3000.66               | 473433.0        | 1                      |
+| 11                 | 3000.67               | 473408.9        | 1                      |
+| 11                 | 3000.68               | 473389.8        | 1                      |
+| 11                 | 3000.69               | 473375.3        | 1                      |
+| 11                 | 3000.7                | 473365.2        | 1                      |
+| 11                 | 3000.71               | 473358.8        | 1                      |
+| 11                 | 3000.72               | 473356.1        | 1                      |
+| 11                 | 3000.73               | 473355.5        | 1                      |
+| 11                 | 3000.74               | 473357.6        | 1                      |
+| 11                 | 3000.75               | 473361.7        | 1                      |
+| 11                 | 3000.76               | 473366.9        | 1                      |
+| 11                 | 3000.77               | 473372.6        | 1                      |
+| 11                 | 3000.78               | 473378.3        | 1                      |
+| 11                 | 3000.79               | 473383.5        | 1                      |
+| 11                 | 3000.8                | 473387.8        | 1                      |
+| 11                 | 3000.81               | 473390.2        | 1                      |
+| 11                 | 3000.82               | 473390.7        | 1                      |
+| 11                 | 3000.83               | 473388.2        | 1                      |
+| 11                 | 3000.84               | 473382.3        | 1                      |
+| 11                 | 3000.85               | 473372.4        | 1                      |
+| 11                 | 3000.86               | 473357.8        | 1                      |
+| 11                 | 3000.87               | 473337.9        | 1                      |
+| 11                 | 3000.88               | 473312.6        | 1                      |
+| 11                 | 3000.89               | 473280.9        | 1                      |
+| 11                 | 3000.9                | 473242.2        | 1                      |
+| 11                 | 3000.91               | 473196.1        | 1                      |
+| 11                 | 3000.92               | 473142.3        | 1                      |
+| 11                 | 3000.93               | 473080.1        | 1                      |
+| 11                 | 3000.94               | 473009.2        | 1                      |
+| 11                 | 3000.95               | 472929.1        | 1                      |
+| 11                 | 3000.96               | 472839.0        | 1                      |
+| 11                 | 3000.97               | 472739.5        | 1                      |
+| 11                 | 3000.98               | 472629.1        | 1                      |
+| 11                 | 3000.99               | 472508.1        | 1                      |
++--------------------+-----------------------+-----------------+------------------------+
+100 rows selected (1.387 seconds)
+Beeline version 3.1.2 by Apache Hive
+Closing: 0: jdbc:hive2://hs:10000
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" exec-hive-file -f "hive/create_insert_m33_tbl.hql"
+########################################################
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/himage/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://hs:10000
+Connected to: Apache Hive (version 3.1.2)
+Driver: Hive JDBC (version 3.1.2)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://hs:10000> CREATE TABLE m33
+. . . . . . . . . . . . >
+. . . . . . . . . . . . > ROW FORMAT DELIMITED
+. . . . . . . . . . . . >
+. . . . . . . . . . . . >   FIELDS TERMINATED BY ','
+. . . . . . . . . . . . >
+. . . . . . . . . . . . > STORED AS TEXTFILE
+. . . . . . . . . . . . >
+. . . . . . . . . . . . > AS SELECT * FROM m33_schem
+. . . . . . . . . . . . > INFO  : Compiling command(queryId=root_20210104010835_7da2a310-29f7-45e6-a521-ecf6705392a0): CREATE TABLE m33
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+AS SELECT * FROM m33_schem
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:m33_schem.age_mil, type:bigint, comment:null), FieldSchema(name:m33_schem.wavelength, type:double, comment:null), FieldSchema(name:m33_schem.flam, type:double, comment:null), FieldSchema(name:m33_schem.is_peculiar, type:int, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=root_20210104010835_7da2a310-29f7-45e6-a521-ecf6705392a0); Time taken: 0.442 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=root_20210104010835_7da2a310-29f7-45e6-a521-ecf6705392a0): CREATE TABLE m33
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+AS SELECT * FROM m33_schem
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+INFO  : Query ID = root_20210104010835_7da2a310-29f7-45e6-a521-ecf6705392a0
+INFO  : Total jobs = 3
+INFO  : Launching Job 1 out of 3
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks is set to 0 since there's no reduce operator
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1609722317732_0001
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://rman:8088/proxy/application_1609722317732_0001/
+INFO  : Starting Job = job_1609722317732_0001, Tracking URL = http://rman:8088/proxy/application_1609722317732_0001/
+INFO  : Kill Command = /himage/hadoop-3.3.0/bin/mapred job  -kill job_1609722317732_0001
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+INFO  : 2021-01-04 01:08:53,996 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2021-01-04 01:09:12,559 Stage-1 map = 25%,  reduce = 0%, Cumulative CPU 18.63 sec
+INFO  : 2021-01-04 01:09:18,729 Stage-1 map = 75%,  reduce = 0%, Cumulative CPU 25.42 sec
+INFO  : 2021-01-04 01:09:22,844 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 30.09 sec
+INFO  : MapReduce Total cumulative CPU time: 30 seconds 90 msec
+INFO  : Ended Job = job_1609722317732_0001
+INFO  : Starting task [Stage-7:CONDITIONAL] in serial mode
+INFO  : Stage-4 is selected by condition resolver.
+INFO  : Stage-3 is filtered out by condition resolver.
+INFO  : Stage-5 is filtered out by condition resolver.
+INFO  : Starting task [Stage-4:MOVE] in serial mode
+INFO  : Moving data to directory hdfs://nn1:9000/user/hive/warehouse/.hive-staging_hive_2021-01-04_01-08-35_340_3458716759412311911-3/-ext-10002 from hdfs://nn1:9000/user/hive/warehouse/.hive-staging_hive_2021-01-04_01-08-35_340_3458716759412311911-3/-ext-10004
+INFO  : Starting task [Stage-0:MOVE] in serial mode
+INFO  : Moving data to directory hdfs://nn1:9000/user/hive/warehouse/m33 from hdfs://nn1:9000/user/hive/warehouse/.hive-staging_hive_2021-01-04_01-08-35_340_3458716759412311911-3/-ext-10002
+INFO  : Starting task [Stage-8:DDL] in serial mode
+INFO  : Starting task [Stage-2:STATS] in serial mode
+INFO  : MapReduce Jobs Launched:
+INFO  : Stage-Stage-1: Map: 1   Cumulative CPU: 30.09 sec   HDFS Read: 72806250 HDFS Write: 61101217 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 30 seconds 90 msec
+INFO  : Completed executing command(queryId=root_20210104010835_7da2a310-29f7-45e6-a521-ecf6705392a0); Time taken: 49.628 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (50.099 seconds)
+0: jdbc:hive2://hs:10000> Closing: 0: jdbc:hive2://hs:10000
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" exec-hive-query -e "SELECT * FROM m33 LIMIT 100"
+########################################################
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/himage/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://hs:10000
+Connected to: Apache Hive (version 3.1.2)
+Driver: Hive JDBC (version 3.1.2)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+INFO  : Compiling command(queryId=root_20210104010930_57841d78-a74c-4405-b2c5-ab301a73be54): SELECT * FROM m33 LIMIT 100
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:m33.age_mil, type:bigint, comment:null), FieldSchema(name:m33.wavelength, type:double, comment:null), FieldSchema(name:m33.flam, type:double, comment:null), FieldSchema(name:m33.is_peculiar, type:int, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=root_20210104010930_57841d78-a74c-4405-b2c5-ab301a73be54); Time taken: 0.17 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=root_20210104010930_57841d78-a74c-4405-b2c5-ab301a73be54): SELECT * FROM m33 LIMIT 100
+INFO  : Completed executing command(queryId=root_20210104010930_57841d78-a74c-4405-b2c5-ab301a73be54); Time taken: 0.001 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
++--------------+-----------------+-----------+------------------+
+| m33.age_mil  | m33.wavelength  | m33.flam  | m33.is_peculiar  |
++--------------+-----------------+-----------+------------------+
+| 11           | 3000.0          | 482983.6  | 1                |
+| 11           | 3000.01         | 482931.5  | 1                |
+| 11           | 3000.02         | 482872.7  | 1                |
+| 11           | 3000.03         | 482805.8  | 1                |
+| 11           | 3000.04         | 482731.6  | 1                |
+| 11           | 3000.05         | 482649.8  | 1                |
+| 11           | 3000.06         | 482560.0  | 1                |
+| 11           | 3000.07         | 482462.3  | 1                |
+| 11           | 3000.08         | 482357.7  | 1                |
+| 11           | 3000.09         | 482245.4  | 1                |
+| 11           | 3000.1          | 482125.8  | 1                |
+| 11           | 3000.11         | 481998.6  | 1                |
+| 11           | 3000.12         | 481864.5  | 1                |
+| 11           | 3000.13         | 481723.4  | 1                |
+| 11           | 3000.14         | 481575.3  | 1                |
+| 11           | 3000.15         | 481421.0  | 1                |
+| 11           | 3000.16         | 481259.9  | 1                |
+| 11           | 3000.17         | 481092.9  | 1                |
+| 11           | 3000.18         | 480919.8  | 1                |
+| 11           | 3000.19         | 480741.4  | 1                |
+| 11           | 3000.2          | 480557.5  | 1                |
+| 11           | 3000.21         | 480369.3  | 1                |
+| 11           | 3000.22         | 480176.2  | 1                |
+| 11           | 3000.23         | 479979.1  | 1                |
+| 11           | 3000.24         | 479778.2  | 1                |
+| 11           | 3000.25         | 479574.0  | 1                |
+| 11           | 3000.26         | 479366.9  | 1                |
+| 11           | 3000.27         | 479157.4  | 1                |
+| 11           | 3000.28         | 478945.6  | 1                |
+| 11           | 3000.29         | 478732.2  | 1                |
+| 11           | 3000.3          | 478517.8  | 1                |
+| 11           | 3000.31         | 478303.0  | 1                |
+| 11           | 3000.32         | 478087.4  | 1                |
+| 11           | 3000.33         | 477872.1  | 1                |
+| 11           | 3000.34         | 477658.1  | 1                |
+| 11           | 3000.35         | 477445.4  | 1                |
+| 11           | 3000.36         | 477234.7  | 1                |
+| 11           | 3000.37         | 477026.2  | 1                |
+| 11           | 3000.38         | 476820.3  | 1                |
+| 11           | 3000.39         | 476618.3  | 1                |
+| 11           | 3000.4          | 476419.8  | 1                |
+| 11           | 3000.41         | 476225.2  | 1                |
+| 11           | 3000.42         | 476035.2  | 1                |
+| 11           | 3000.43         | 475850.2  | 1                |
+| 11           | 3000.44         | 475670.4  | 1                |
+| 11           | 3000.45         | 475496.0  | 1                |
+| 11           | 3000.46         | 475327.6  | 1                |
+| 11           | 3000.47         | 475165.4  | 1                |
+| 11           | 3000.48         | 475009.8  | 1                |
+| 11           | 3000.49         | 474860.6  | 1                |
+| 11           | 3000.5          | 474718.8  | 1                |
+| 11           | 3000.51         | 474583.9  | 1                |
+| 11           | 3000.52         | 474456.1  | 1                |
+| 11           | 3000.53         | 474335.8  | 1                |
+| 11           | 3000.54         | 474223.1  | 1                |
+| 11           | 3000.55         | 474117.4  | 1                |
+| 11           | 3000.56         | 474019.7  | 1                |
+| 11           | 3000.57         | 473929.1  | 1                |
+| 11           | 3000.58         | 473846.2  | 1                |
+| 11           | 3000.59         | 473770.4  | 1                |
+| 11           | 3000.6          | 473702.6  | 1                |
+| 11           | 3000.61         | 473641.2  | 1                |
+| 11           | 3000.62         | 473587.0  | 1                |
+| 11           | 3000.63         | 473539.0  | 1                |
+| 11           | 3000.64         | 473497.8  | 1                |
+| 11           | 3000.65         | 473462.5  | 1                |
+| 11           | 3000.66         | 473433.0  | 1                |
+| 11           | 3000.67         | 473408.9  | 1                |
+| 11           | 3000.68         | 473389.8  | 1                |
+| 11           | 3000.69         | 473375.3  | 1                |
+| 11           | 3000.7          | 473365.2  | 1                |
+| 11           | 3000.71         | 473358.8  | 1                |
+| 11           | 3000.72         | 473356.1  | 1                |
+| 11           | 3000.73         | 473355.5  | 1                |
+| 11           | 3000.74         | 473357.6  | 1                |
+| 11           | 3000.75         | 473361.7  | 1                |
+| 11           | 3000.76         | 473366.9  | 1                |
+| 11           | 3000.77         | 473372.6  | 1                |
+| 11           | 3000.78         | 473378.3  | 1                |
+| 11           | 3000.79         | 473383.5  | 1                |
+| 11           | 3000.8          | 473387.8  | 1                |
+| 11           | 3000.81         | 473390.2  | 1                |
+| 11           | 3000.82         | 473390.7  | 1                |
+| 11           | 3000.83         | 473388.2  | 1                |
+| 11           | 3000.84         | 473382.3  | 1                |
+| 11           | 3000.85         | 473372.4  | 1                |
+| 11           | 3000.86         | 473357.8  | 1                |
+| 11           | 3000.87         | 473337.9  | 1                |
+| 11           | 3000.88         | 473312.6  | 1                |
+| 11           | 3000.89         | 473280.9  | 1                |
+| 11           | 3000.9          | 473242.2  | 1                |
+| 11           | 3000.91         | 473196.1  | 1                |
+| 11           | 3000.92         | 473142.3  | 1                |
+| 11           | 3000.93         | 473080.1  | 1                |
+| 11           | 3000.94         | 473009.2  | 1                |
+| 11           | 3000.95         | 472929.1  | 1                |
+| 11           | 3000.96         | 472839.0  | 1                |
+| 11           | 3000.97         | 472739.5  | 1                |
+| 11           | 3000.98         | 472629.1  | 1                |
+| 11           | 3000.99         | 472508.1  | 1                |
++--------------+-----------------+-----------+------------------+
+100 rows selected (0.339 seconds)
+Beeline version 3.1.2 by Apache Hive
+Closing: 0: jdbc:hive2://hs:10000
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" sql-exec-file -f "sql/create_astro_database.sql"
+########################################################
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" sql-exec-file -f "sql/create_m33_tbl.sql"
+########################################################
+Changed database context to 'astroDB'.
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" sqoop-export --export-dir "/user/hive/warehouse/m33" --sql-table "m33" --database-name "astroDB"
+########################################################
+Warning: /himage/sqoop-1.4.7.bin__hadoop-2.6.0/../hbase does not exist! HBase imports will fail.
+Please set $HBASE_HOME to the root of your HBase installation.
+Warning: /himage/sqoop-1.4.7.bin__hadoop-2.6.0/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+Warning: /himage/sqoop-1.4.7.bin__hadoop-2.6.0/../zookeeper does not exist! Accumulo imports will fail.
+Please set $ZOOKEEPER_HOME to the root of your Zookeeper installation.
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/himage/hadoop-3.3.0/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/himage/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+2021-01-04 01:09:37,132 INFO sqoop.Sqoop: Running Sqoop version: 1.4.7
+2021-01-04 01:09:37,228 WARN tool.BaseSqoopTool: Setting your password on the command-line is insecure. Consider using -P instead.
+2021-01-04 01:09:37,350 INFO manager.SqlManager: Using default fetchSize of 1000
+2021-01-04 01:09:37,350 INFO tool.CodeGenTool: Beginning code generation
+2021-01-04 01:09:38,037 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM [m33] AS t WHERE 1=0
+2021-01-04 01:09:38,293 INFO orm.CompilationManager: HADOOP_MAPRED_HOME is /himage/hadoop-3.3.0
+Note: /tmp/sqoop-root/compile/c40f34274651983f49bd44381f857208/m33.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+2021-01-04 01:09:40,816 INFO orm.CompilationManager: Writing jar file: /tmp/sqoop-root/compile/c40f34274651983f49bd44381f857208/m33.jar
+2021-01-04 01:09:40,837 INFO mapreduce.ExportJobBase: Beginning export of m33
+2021-01-04 01:09:40,837 INFO Configuration.deprecation: mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /himage/hadoop-3.3.0/lib/native/libhadoop.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+2021-01-04 01:09:40,949 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2021-01-04 01:09:40,983 INFO Configuration.deprecation: mapred.jar is deprecated. Instead, use mapreduce.job.jar
+2021-01-04 01:09:42,239 INFO Configuration.deprecation: mapred.reduce.tasks.speculative.execution is deprecated. Instead, use mapreduce.reduce.speculative
+2021-01-04 01:09:42,242 INFO Configuration.deprecation: mapred.map.tasks.speculative.execution is deprecated. Instead, use mapreduce.map.speculative
+2021-01-04 01:09:42,243 INFO Configuration.deprecation: mapred.map.tasks is deprecated. Instead, use mapreduce.job.maps
+2021-01-04 01:09:42,360 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at rman/172.31.0.5:8032
+2021-01-04 01:09:42,632 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/root/.staging/job_1609722317732_0002
+2021-01-04 01:09:50,298 INFO input.FileInputFormat: Total input files to process : 1
+2021-01-04 01:09:50,302 INFO input.FileInputFormat: Total input files to process : 1
+2021-01-04 01:09:50,452 INFO mapreduce.JobSubmitter: number of splits:4
+2021-01-04 01:09:50,488 INFO Configuration.deprecation: mapred.map.tasks.speculative.execution is deprecated. Instead, use mapreduce.map.speculative
+2021-01-04 01:09:50,672 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1609722317732_0002
+2021-01-04 01:09:50,672 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2021-01-04 01:09:50,915 INFO conf.Configuration: resource-types.xml not found
+2021-01-04 01:09:50,916 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2021-01-04 01:09:50,981 INFO impl.YarnClientImpl: Submitted application application_1609722317732_0002
+2021-01-04 01:09:51,019 INFO mapreduce.Job: The url to track the job: http://rman:8088/proxy/application_1609722317732_0002/
+2021-01-04 01:09:51,020 INFO mapreduce.Job: Running job: job_1609722317732_0002
+2021-01-04 01:10:00,124 INFO mapreduce.Job: Job job_1609722317732_0002 running in uber mode : false
+2021-01-04 01:10:00,126 INFO mapreduce.Job:  map 0% reduce 0%
+2021-01-04 01:10:20,347 INFO mapreduce.Job:  map 2% reduce 0%
+2021-01-04 01:10:22,360 INFO mapreduce.Job:  map 3% reduce 0%
+2021-01-04 01:10:25,381 INFO mapreduce.Job:  map 5% reduce 0%
+2021-01-04 01:10:26,387 INFO mapreduce.Job:  map 6% reduce 0%
+2021-01-04 01:10:27,395 INFO mapreduce.Job:  map 9% reduce 0%
+2021-01-04 01:10:31,419 INFO mapreduce.Job:  map 10% reduce 0%
+2021-01-04 01:10:32,426 INFO mapreduce.Job:  map 11% reduce 0%
+2021-01-04 01:10:33,433 INFO mapreduce.Job:  map 14% reduce 0%
+2021-01-04 01:10:34,441 INFO mapreduce.Job:  map 15% reduce 0%
+2021-01-04 01:10:37,460 INFO mapreduce.Job:  map 16% reduce 0%
+2021-01-04 01:10:38,466 INFO mapreduce.Job:  map 17% reduce 0%
+2021-01-04 01:10:39,471 INFO mapreduce.Job:  map 20% reduce 0%
+2021-01-04 01:10:43,493 INFO mapreduce.Job:  map 21% reduce 0%
+2021-01-04 01:10:44,499 INFO mapreduce.Job:  map 22% reduce 0%
+2021-01-04 01:10:45,504 INFO mapreduce.Job:  map 24% reduce 0%
+2021-01-04 01:10:46,510 INFO mapreduce.Job:  map 25% reduce 0%
+2021-01-04 01:10:48,524 INFO mapreduce.Job:  map 26% reduce 0%
+2021-01-04 01:10:50,535 INFO mapreduce.Job:  map 27% reduce 0%
+2021-01-04 01:10:51,540 INFO mapreduce.Job:  map 30% reduce 0%
+2021-01-04 01:10:54,556 INFO mapreduce.Job:  map 31% reduce 0%
+2021-01-04 01:10:56,566 INFO mapreduce.Job:  map 32% reduce 0%
+2021-01-04 01:10:57,572 INFO mapreduce.Job:  map 35% reduce 0%
+2021-01-04 01:10:58,579 INFO mapreduce.Job:  map 36% reduce 0%
+2021-01-04 01:11:00,590 INFO mapreduce.Job:  map 37% reduce 0%
+2021-01-04 01:11:03,607 INFO mapreduce.Job:  map 41% reduce 0%
+2021-01-04 01:11:06,626 INFO mapreduce.Job:  map 42% reduce 0%
+2021-01-04 01:11:08,637 INFO mapreduce.Job:  map 43% reduce 0%
+2021-01-04 01:11:09,644 INFO mapreduce.Job:  map 46% reduce 0%
+2021-01-04 01:11:10,651 INFO mapreduce.Job:  map 47% reduce 0%
+2021-01-04 01:11:12,663 INFO mapreduce.Job:  map 48% reduce 0%
+2021-01-04 01:11:14,707 INFO mapreduce.Job:  map 51% reduce 0%
+2021-01-04 01:11:16,719 INFO mapreduce.Job:  map 52% reduce 0%
+2021-01-04 01:11:18,731 INFO mapreduce.Job:  map 53% reduce 0%
+2021-01-04 01:11:20,742 INFO mapreduce.Job:  map 55% reduce 0%
+2021-01-04 01:11:22,754 INFO mapreduce.Job:  map 57% reduce 0%
+2021-01-04 01:11:24,765 INFO mapreduce.Job:  map 58% reduce 0%
+2021-01-04 01:11:26,775 INFO mapreduce.Job:  map 60% reduce 0%
+2021-01-04 01:11:28,784 INFO mapreduce.Job:  map 61% reduce 0%
+2021-01-04 01:11:30,794 INFO mapreduce.Job:  map 62% reduce 0%
+2021-01-04 01:11:32,803 INFO mapreduce.Job:  map 65% reduce 0%
+2021-01-04 01:11:34,813 INFO mapreduce.Job:  map 66% reduce 0%
+2021-01-04 01:11:36,822 INFO mapreduce.Job:  map 67% reduce 0%
+2021-01-04 01:11:38,833 INFO mapreduce.Job:  map 70% reduce 0%
+2021-01-04 01:11:40,843 INFO mapreduce.Job:  map 71% reduce 0%
+2021-01-04 01:11:42,852 INFO mapreduce.Job:  map 72% reduce 0%
+2021-01-04 01:11:44,862 INFO mapreduce.Job:  map 75% reduce 0%
+2021-01-04 01:11:46,872 INFO mapreduce.Job:  map 76% reduce 0%
+2021-01-04 01:11:48,882 INFO mapreduce.Job:  map 77% reduce 0%
+2021-01-04 01:11:50,892 INFO mapreduce.Job:  map 80% reduce 0%
+2021-01-04 01:11:52,901 INFO mapreduce.Job:  map 81% reduce 0%
+2021-01-04 01:11:54,911 INFO mapreduce.Job:  map 84% reduce 0%
+2021-01-04 01:11:58,930 INFO mapreduce.Job:  map 87% reduce 0%
+2021-01-04 01:12:00,939 INFO mapreduce.Job:  map 90% reduce 0%
+2021-01-04 01:12:04,957 INFO mapreduce.Job:  map 93% reduce 0%
+2021-01-04 01:12:06,973 INFO mapreduce.Job:  map 96% reduce 0%
+2021-01-04 01:12:09,987 INFO mapreduce.Job:  map 100% reduce 0%
+2021-01-04 01:12:09,994 INFO mapreduce.Job: Job job_1609722317732_0002 completed successfully
+2021-01-04 01:12:10,063 INFO mapreduce.Job: Counters: 33
+        File System Counters
+                FILE: Number of bytes read=0
+                FILE: Number of bytes written=1093384
+                FILE: Number of read operations=0
+                FILE: Number of large read operations=0
+                FILE: Number of write operations=0
+                HDFS: Number of bytes read=61118119
+                HDFS: Number of bytes written=0
+                HDFS: Number of read operations=19
+                HDFS: Number of large read operations=0
+                HDFS: Number of write operations=0
+                HDFS: Number of bytes read erasure-coded=0
+        Job Counters
+                Launched map tasks=4
+                Rack-local map tasks=4
+                Total time spent by all maps in occupied slots (ms)=424802
+                Total time spent by all reduces in occupied slots (ms)=0
+                Total time spent by all map tasks (ms)=424802
+                Total vcore-milliseconds taken by all map tasks=424802
+                Total megabyte-milliseconds taken by all map tasks=434997248
+        Map-Reduce Framework
+                Map input records=2800000
+                Map output records=2800000
+                Input split bytes=581
+                Spilled Records=0
+                Failed Shuffles=0
+                Merged Map outputs=0
+                GC time elapsed (ms)=3668
+                CPU time spent (ms)=61720
+                Physical memory (bytes) snapshot=1675083776
+                Virtual memory (bytes) snapshot=10635948032
+                Total committed heap usage (bytes)=1373110272
+                Peak Map Physical memory (bytes)=421482496
+                Peak Map Virtual memory (bytes)=2661572608
+        File Input Format Counters
+                Bytes Read=0
+        File Output Format Counters
+                Bytes Written=0
+2021-01-04 01:12:10,068 INFO mapreduce.ExportJobBase: Transferred 58.2868 MB in 147.8115 seconds (403.7959 KB/sec)
+2021-01-04 01:12:10,071 INFO mapreduce.ExportJobBase: Exported 2800000 records.
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" sql-exec-query -q "SELECT TOP 100 * FROM m33" -d "astroDB"
+########################################################
+age_mil              wavelength               flam                     is_peculiar
+-------------------- ------------------------ ------------------------ -----------
+                  11       9999.2999999999993       6950.0870000000004           0
+                  11       9999.3099999999995       6952.0959999999995           0
+                  11       9999.3199999999997       6954.0659999999998           0
+                  11       9999.3299999999999       6955.9949999999999           0
+                  11       9999.3400000000001       6957.8829999999998           0
+                  11       9999.3500000000004       6959.7290000000003           0
+                  11       9999.3600000000006       6961.5299999999997           0
+                  11       9999.3700000000008       6963.2799999999997           0
+                  11       9999.3799999999992       6964.9889999999996           0
+                  11       9999.3899999999994       6966.6459999999997           0
+                  11       9999.3999999999996       6968.2529999999997           0
+                  11       9999.4099999999999       6969.8119999999999           0
+                  11       9999.4200000000001       6971.3220000000001           0
+                  11       9999.4300000000003       6972.7780000000002           0
+                  11       9999.4400000000005       6974.1869999999999           0
+                  11       9999.4500000000007       6975.5460000000003           0
+                  11       9999.4599999999991       6976.8549999999996           0
+                  11       9999.4699999999993       6978.1090000000004           0
+                  11       9999.4799999999996       6979.3140000000003           0
+                  11       9999.4899999999998       6980.4719999999998           0
+                  11                   9999.5       6981.5799999999999           0
+                  11       9999.5100000000002       6982.6409999999996           0
+                  11       9999.5200000000004       6983.6530000000002           0
+                  11       9999.5300000000007       6984.6149999999998           0
+                  11       9999.5400000000009       6985.5349999999999           0
+                  11       9999.5499999999993       6986.4070000000002           0
+                  11       9999.5599999999995       6987.2380000000003           0
+                  11       9999.5699999999997       6988.0249999999996           0
+                  11       9999.5799999999999       6988.7700000000004           0
+                  11       9999.5900000000001       6989.4709999999995           0
+                  11       9999.6000000000004       6990.1400000000003           0
+                  11       9999.6100000000006       6990.7629999999999           0
+                  11       9999.6200000000008       6991.3530000000001           0
+                  11       9999.6299999999992       6991.9030000000002           0
+                  11       9999.6399999999994       6992.4229999999998           0
+                  11       9999.6499999999996       6992.9049999999997           0
+                  11       9999.6599999999999                 6993.357           0
+                  11       9999.6700000000001       6993.7809999999999           0
+                  11       9999.6800000000003                 6994.174           0
+                  11       9999.6900000000005       6994.5370000000003           0
+                  11       9999.7000000000007                 6994.875           0
+                  11       9999.7099999999991       6995.1850000000004           0
+                  11       9999.7199999999993                 6995.473           0
+                  11       9999.7299999999996       6995.7370000000001           0
+                  11       9999.7399999999998       6995.9780000000001           0
+                  11                  9999.75                 6996.201           0
+                  11       9999.7600000000002       6996.4049999999997           0
+                  11       9999.7700000000004       6996.5889999999999           0
+                  11       9999.7800000000007       6996.7539999999999           0
+                  11       9999.7900000000009       6996.9049999999997           0
+                  11       9999.7999999999993       6997.0420000000004           0
+                  11       9999.8099999999995       6997.1629999999996           0
+                  11       9999.8199999999997       6997.2740000000003           0
+                  11       9999.8299999999999       6997.3720000000003           0
+                  11       9999.8400000000001       6997.4570000000003           0
+                  11       9999.8500000000004       6997.5339999999997           0
+                  11       9999.8600000000006                 6997.598           0
+                  11       9999.8700000000008       6997.6530000000002           0
+                  11       9999.8799999999992       6997.7089999999998           0
+                  11       9999.8899999999994                  6997.75           0
+                  11       9999.8999999999996       6997.7870000000003           0
+                  11       9999.9099999999999                 6997.817           0
+                  11       9999.9200000000001       6997.8459999999995           0
+                  11       9999.9300000000003       6997.8689999999997           0
+                  11       9999.9400000000005       6997.8850000000002           0
+                  11       9999.9500000000007       6997.8999999999996           0
+                  11       9999.9599999999991       6997.9139999999998           0
+                  11       9999.9699999999993       6997.9210000000003           0
+                  11       9999.9799999999996       6997.9290000000001           0
+                  11       9999.9899999999998                 6997.933           0
+                  12                   3000.0                 390751.0           0
+                  12       3000.0100000000002       390767.09999999998           0
+                  12                  3000.02       390778.90000000002           0
+                  12       3000.0300000000002       390787.09999999998           0
+                  12                  3000.04       390790.70000000001           0
+                  12       3000.0500000000002       390790.29999999999           0
+                  12       3000.0599999999999       390785.70000000001           0
+                  12       3000.0700000000002       390777.09999999998           0
+                  12       3000.0799999999999       390764.70000000001           0
+                  12       3000.0900000000001       390747.40000000002           0
+                  12       3000.0999999999999       390727.20000000001           0
+                  12       3000.1100000000001       390702.59999999998           0
+                  12       3000.1199999999999       390674.59999999998           0
+                  12       3000.1300000000001                 390643.0           0
+                  12       3000.1399999999999                 390608.0           0
+                  12       3000.1500000000001       390569.70000000001           0
+                  12       3000.1599999999999       390528.59999999998           0
+                  12       3000.1700000000001       390484.29999999999           0
+                  12       3000.1799999999998       390437.59999999998           0
+                  12       3000.1900000000001       390388.20000000001           0
+                  12       3000.1999999999998                 390336.5           0
+                  12                  3000.21       390282.90000000002           0
+                  12       3000.2199999999998       390227.79999999999           0
+                  12                  3000.23       390170.59999999998           0
+                  12       3000.2399999999998       390112.70000000001           0
+                  12                  3000.25       390053.40000000002           0
+                  12       3000.2600000000002       389993.20000000001           0
+                  12                  3000.27       389932.79999999999           0
+                  12       3000.2800000000002       389871.79999999999           0
+                  12                  3000.29       389810.90000000002           0
+
+(100 rows affected)
+
+Sqlcmd: Warning: The last operation was terminated because the user pressed CTRL+C.
+Program end.
+########################################################
+runall.ps1 -- Starting task: python C:\service-pipelines\astro\playground.py -p "example" -s "C:\service-pipelines\astro\examples\src" -d "C:\service-pipelines\astro\examples\data" -v "C:\service-pipelines\astro\examples\volumes" stop
+########################################################
+Spinning cluster down.
+Stopping example_hs_1     ... done                                                                                      Stopping example_nm1_1    ... done                                                                                      Stopping example_client_1 ... done                                                                                      Stopping example_rman_1   ... done                                                                                      Stopping example_mrhist_1 ... done                                                                                      Stopping example_dn1_1    ... done                                                                                      Stopping example_nn1_1    ... done                                                                                      Stopping example_sql_1    ... done                                                                                      Removing example_hs_1     ... done                                                                                      Removing example_nm1_1    ... done                                                                                      Removing example_client_1 ... done                                                                                      Removing example_rman_1   ... done                                                                                      Removing example_mrhist_1 ... done                                                                                      Removing example_dn1_1    ... done                                                                                      Removing example_nn1_1    ... done                                                                                      Removing example_sql_1    ... done                                                                                      Removing network example_default
+Program end.

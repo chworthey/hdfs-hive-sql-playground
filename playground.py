@@ -18,8 +18,9 @@ import requests
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 HADOOP_HOME = '/himage/hadoop-3.3.0'
 HIVE_HOME = '/himage/apache-hive-3.1.2-bin'
+SQOOP_HOME = '/himage/sqoop-1.4.7.bin__hadoop-2.6.0'
 COMPOSE_FILE = os.path.join(ROOT_DIR, 'docker-compose.yml')
-SQL_TEST_PASSWORD = 'myStrong(!)Password'
+SQL_TEST_PASSWORD = 'myStrong(*)Password'
 NUM_DATA_NODES = 1
 NUM_NODE_MANAGERS = 1
 MIN_DISK_SPACE = 8589934592 # 1GB
@@ -47,17 +48,17 @@ NodeHealthBeanCheck = collections.namedtuple('NodeHealthBeanCheck', \
 NodeHealthReport = collections.namedtuple('NodeHealthReport', \
   'is_healthy message')
 HealthReportSummary = collections.namedtuple('HealthReportSummary', \
-  'cluster_healthy nn1 dn1 rman nm1 mrhist hs client sql sqp')
+  'cluster_healthy nn1 dn1 rman nm1 mrhist hs client sql')
 
 class Config:
   """
   Doc str
   """
   def __init__(self, project_name=None, source_dir=None, data_dir=None, volumes_dir=None):
-    self._project_name = project_name
-    self._source_dir = source_dir
-    self._data_dir = data_dir
-    self._volumes_dir = volumes_dir
+    self.project_name = project_name
+    self.source_dir = source_dir
+    self.data_dir = data_dir
+    self.volumes_dir = volumes_dir
 
   @property
   def project_name(self):
@@ -79,7 +80,10 @@ class Config:
 
   @source_dir.setter
   def source_dir(self, value):
-    self._source_dir = value
+    if value:
+      self._source_dir = os.path.abspath(value)
+    else:
+      self._source_dir = None
 
   @property
   def data_dir(self):
@@ -90,7 +94,10 @@ class Config:
 
   @data_dir.setter
   def data_dir(self, value):
-    self._data_dir = value
+    if value:
+      self._data_dir = os.path.abspath(value)
+    else:
+      self._data_dir = None
 
   @property
   def volumes_dir(self):
@@ -101,7 +108,10 @@ class Config:
 
   @volumes_dir.setter
   def volumes_dir(self, value):
-    self._volumes_dir = value
+    if value:
+      self._volumes_dir = os.path.abspath(value)
+    else:
+      self._volumes_dir = None
 
   def save(self, filename):
     """
@@ -147,7 +157,10 @@ def exec_docker(config, node_name, command, workdir=None, \
   split_spaces = True
   for _c in command.split('"'):
     if split_spaces:
-      _args += _c.split(' ')
+      _splt = _c.split(' ')
+      for _s in _splt:
+        if _s:
+          _args.append(_s)
     else:
       _args.append(_c)
     split_spaces = not split_spaces
@@ -198,12 +211,6 @@ def setup_hive(config):
   exec_docker(config, 'nn1', fs_cmd + '-chmod g+w /user/hive/warehouse')
   exec_docker(config, 'hs', '%s/bin/schematool -dbType derby -initSchema' % \
     (HIVE_HOME), workdir='/metastore')
-
-def setup_sqoop(config):
-  """
-  doc str
-  """
-  print('blah')
 
 def cluster_up(config):
   """
@@ -456,8 +463,7 @@ def gen_health_summary(config):
     mrhist=_mrhist, \
     hs=_hs, \
     client=_client, \
-    sql=_sql, \
-    sqp=None)
+    sql=_sql)
   return summary
 
 def print_node_health(report):
@@ -494,8 +500,6 @@ def print_summary(summary):
   print_node_health(summary.client)
   print('SQL SERVER')
   print_node_health(summary.sql)
-  print('SQOOP SERVER')
-  print_node_health(summary.sqp)
   print('OVERALL CLUSTER HEALTH')
   if summary.cluster_healthy:
     print('\u2705 Healthy')
@@ -533,8 +537,7 @@ def get_summary_preview_str(summary):
     ('mrhist', summary.mrhist.is_healthy),
     ('hs', summary.hs.is_healthy),
     ('client', summary.client.is_healthy),
-    ('sql', summary.sql.is_healthy),
-    ('sqp', True)
+    ('sql', summary.sql.is_healthy)
   ]
   _s2 = map(lambda a : '%s %s' % \
     (('\u2705' if a[1] else '\u274C'), a[0]), _s)
@@ -558,6 +561,9 @@ def setup(config):
   """
   doc str
   """
+  print('Destroying volumes.')
+  destroy_volumes(config)
+
   print('Spinning cluster up.')
   cluster_up(config)
 
@@ -569,9 +575,6 @@ def setup(config):
 
   print('Setting up Hive server.')
   setup_hive(config)
-
-  print('Setting up Sqoop server.')
-  setup_sqoop(config)
 
   print('Ingesting configured data volume into HDFS (this could take some time).')
   ingest_data(config)
@@ -659,6 +662,32 @@ def sqlcmd_cli(config, local):
     exec_docker(config, 'client', '/opt/mssql-tools/bin/sqlcmd -S sql -U sa -P %s' % \
       (SQL_TEST_PASSWORD), workdir='/src', interactive=True)
 
+def sql_exec_query(config, query, database_name='master'):
+  """
+  doc str
+  """
+  exec_docker(config, 'client', '/opt/mssql-tools/bin/sqlcmd -S sql' \
+    ' -U sa -d %s -P %s -q "%s"' % \
+    (database_name, SQL_TEST_PASSWORD, query), workdir='/src')
+
+def sql_exec_file(config, filename):
+  """
+  doc str
+  """
+  exec_docker(config, 'client', '/opt/mssql-tools/bin/sqlcmd -S sql -U sa -P %s -i "%s"' % \
+      (SQL_TEST_PASSWORD, filename), workdir='/src')
+
+def sqoop_export(config, export_dir, sql_table, database_name='master', delimiter=','):
+  """
+  doc str
+  """
+  exec_docker(config, 'client', '%s/bin/sqoop export --connect' \
+    ' "jdbc:sqlserver://sql;databaseName=%s"' \
+    ' --username "sa" --password "%s" --export-dir "%s" --table "%s"' \
+    ' --input-fields-terminated-by "%s"' % \
+    (SQOOP_HOME, database_name, SQL_TEST_PASSWORD, export_dir, sql_table, delimiter), \
+    workdir='/src')
+
 def launch_ssms_win_local(executable_path):
   """
   doc str
@@ -690,12 +719,6 @@ def exec_hive_query(config, query):
   #exec_docker(config, 'client', "echo 'Hello world'")
   exec_docker(config, 'client', '%s/bin/beeline -u jdbc:hive2://hs:10000 -e "%s"' % \
     (HIVE_HOME, query), workdir='/src')
-
-def exec_sql_file(config, src_file):
-  """
-  doc str
-  """
-  exec_docker(config, 'client', 'sqlcmd -S sql -U sa -P $SQL_PWD -f %s' % (src_file))
 
 def input_with_validator(prompt, failure_msg, validator_func):
   """
@@ -836,12 +859,6 @@ def setup_hive_cmd(config, args):
   """
   setup_hive(config)
 
-def setup_sqoop_cmd(config, args):
-  """
-  doc str
-  """
-  setup_sqoop(config)
-
 def cluster_up_cmd(config, args):
   """
   doc str
@@ -870,7 +887,19 @@ def setup_cmd(config, args):
   """
   doc str
   """
-  setup(config)
+  if args.skip_confirm:
+    setup(config)
+    return
+
+  result = input_with_validator('Are you sure you want to delete directory "%s" and all of its' \
+    ' files? y/n: ' % (config.volumes_dir), \
+    'Please use "y" or "n".', \
+    validate_yn \
+  ).lower()
+  if result == 'y':
+    setup(config)
+  else:
+    print('Cancelling.')
 
 def start_cmd(config, args):
   """
@@ -926,6 +955,24 @@ def sqlcmd_cli_cmd(config, args):
   """
   sqlcmd_cli(config, args.local)
 
+def sql_exec_query_cmd(config, args):
+  """
+  doc str
+  """
+  sql_exec_query(config, args.query, args.database)
+
+def sql_exec_file_cmd(config, args):
+  """
+  doc str
+  """
+  sql_exec_file(config, args.filename)
+
+def sqoop_export_cmd(config, args):
+  """
+  doc str
+  """
+  sqoop_export(config, args.export_dir, args.sql_table, args.database_name, args.delimiter)
+
 def local_sql_info_cmd(config, args):
   """
   doc str
@@ -952,12 +999,6 @@ def exec_hive_query_cmd(config, args):
   doc str
   """
   exec_hive_query(config, args.query)
-
-def exec_sql_file_cmd(config, args):
-  """
-  doc str
-  """
-  exec_sql_file(config, args.src_path)
 
 def print_health_cmd(config, args):
   """
@@ -1020,9 +1061,6 @@ def main():
     ' necessary directories in HDFS. Cluster should be up and hadoop daemons should already' \
     ' be running.').set_defaults(func=setup_hive_cmd)
 
-  # setup-sqoop
-  subparsers.add_parser('setup-sqoop', help='TODO: help').set_defaults(func=setup_sqoop_cmd)
-
   # cluster-up
   subparsers.add_parser('cluster-up', help='Boots up all the nodes on the cluster but does not' \
     ' start any of their services.').set_defaults(func=cluster_up_cmd)
@@ -1040,11 +1078,16 @@ def main():
     .set_defaults(func=cluster_down_cmd)
 
   # setup
-  subparsers.add_parser('setup', help='TODO: help').set_defaults(func=setup_cmd)
+  setup_p = subparsers.add_parser('setup', help='Sets up the cluster for the first time.')
+  setup_p.add_argument('--skip-confirm', '-y', action='store_true', help='Skips any confirmation' \
+    ' messages')
+  setup_p.set_defaults(func=setup_cmd, skip_confirm=False)
 
   # start
-  start_p = subparsers.add_parser('start', help='TODO: help')
-  start_p.add_argument('--no-wait', '-w', action='store_true')
+  start_p = subparsers.add_parser('start', help='Spins up the cluster and starts the daemons on ' \
+    'each node.')
+  start_p.add_argument('--no-wait', '-w', action='store_true', help='Exits immediately after ' \
+    'the cluster daemons have been told to start rather than blocking until the nodes are healthy.')
   start_p.set_defaults(func=start_cmd, no_wait=False)
 
   # stop
@@ -1052,7 +1095,7 @@ def main():
     .set_defaults(func=stop_cmd)
 
   # destroy-vol
-  destroy_vol_p = subparsers.add_parser('destroy-vol', help='TODO: help')
+  destroy_vol_p = subparsers.add_parser('destroy-vol', help='Removes all persisted cluster files.')
   destroy_vol_p.add_argument('--skip-confirm', '-y', action='store_true')
   destroy_vol_p.set_defaults(func=destroy_volumes_cmd, skip_confirm=False)
 
@@ -1063,7 +1106,8 @@ def main():
   print_hadoop_node_logs_p.set_defaults(func=print_hadoop_node_logs_cmd)
 
   # beeline-cli
-  subparsers.add_parser('beeline-cli', help='TODO: help').set_defaults(func=beeline_cli_cmd)
+  subparsers.add_parser('beeline-cli', help='Launches a cli using beeline on the client node.') \
+    .set_defaults(func=beeline_cli_cmd)
 
   # bash-cli
   bash_cli_p = subparsers.add_parser('bash-cli', help='Launches bash cli on a single node in the' \
@@ -1079,6 +1123,32 @@ def main():
     ' launched on the host machine instead of the client node. Note: this requires sqlcmd to' \
       ' be on the environment PATH variable.')
   sql_cli_p.set_defaults(func=sqlcmd_cli_cmd, local=False)
+
+  # sql-exec-query
+  sql_exec_query_p = subparsers.add_parser('sql-exec-query', help='Executes an SQL query.')
+  sql_exec_query_p.add_argument('--query', '-q', help='The sql query.')
+  sql_exec_query_p.add_argument('--database', '-d', help='The database to use.')
+  sql_exec_query_p.set_defaults(func=sql_exec_query_cmd, database='master')
+
+  # sql-exec-file
+  sql_exec_file_p = subparsers.add_parser('sql-exec-file', help='Executes an SQL file on the ' \
+    'client node.')
+  sql_exec_file_p.add_argument('--filename', '-f', help='The relative filename in the source dir.')
+  sql_exec_file_p.set_defaults(func=sql_exec_file_cmd)
+
+  # sqoop-export
+  sqoop_export_p = subparsers.add_parser('sqoop-export', help='Exports CSV files loaded in HDFS' \
+    ' to the sql server node.')
+    #args.export_dir, args.sql_table, args.database_name, args.delimiter
+  sqoop_export_p.add_argument('--export-dir', '-e', help='The directory in HDFS which contains' \
+    ' the CSV files.')
+  sqoop_export_p.add_argument('--sql-table', '-t', help='The name of the sql table to export to.' \
+    ' Note: this table should already exist with the correct schema.')
+  sqoop_export_p.add_argument('--database-name', '-b', help='The name of the database to' \
+    ' export to.')
+  sqoop_export_p.add_argument('--delimiter', '-d', help='The character used to for delimiting' \
+    ' the values in the HDFS files.')
+  sqoop_export_p.set_defaults(func=sqoop_export_cmd, database_name='master', delimiter=',')
 
   # local-sql-info
   subparsers.add_parser('local-sql-info', help='Shows the connection information for connecting' \
@@ -1104,13 +1174,6 @@ def main():
     ' hive query.')
   exec_hive_query_p.add_argument('--query', '-e', help='The hive query string to execute.')
   exec_hive_query_p.set_defaults(func=exec_hive_query_cmd)
-
-  # exec-sql-file
-  exec_sql_file_p = subparsers.add_parser('exec-sql-file', help='Executes a sql script from' \
-    ' the src folder.')
-  exec_sql_file_p.add_argument('--src-path', '-f', help='The relative path to the file on the ' \
-    'linux node')
-  exec_sql_file_p.set_defaults(func=exec_sql_file_cmd)
 
   # print-health
   subparsers.add_parser('print-health', help='Prints the cluster health information.') \

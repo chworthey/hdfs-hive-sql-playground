@@ -2,3 +2,4 @@ bin/apache-hive-3.1.2-bin/** filter=lfs diff=lfs merge=lfs -text
 bin/hadoop-3.3.0/** filter=lfs diff=lfs merge=lfs -text
 bin/sqoop-1.99.7-bin-hadoop200/** filter=lfs diff=lfs merge=lfs -text
 examples/data/** filter=lfs diff=lfs merge=lfs -text
+sqoop-1.4.7.bin__hadoop-2.6.0/** filter=lfs diff=lfs merge=lfs -text
