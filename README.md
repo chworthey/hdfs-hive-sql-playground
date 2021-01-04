@@ -72,6 +72,8 @@ Alternatively, you can simply use [Python 3.9](https://www.python.org/downloads/
 
 ## Run Examples
 
+Make sure Docker for Windows is running ([with Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)).
+
 The `./examples` directory is the best place to start. Check the contents and then run:
 
 ```sh
