@@ -1,3 +1,4 @@
 Modifications made to 3p binary distributions:
 - Replaced guava lib in bin/apache-hive-3.1.2-bin/lib/... due to hadoop conflict.
 - Added config files directly to the distributions
+- Added commons-lang-2.6.jar to sqoop libs

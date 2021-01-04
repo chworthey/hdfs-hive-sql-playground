@@ -1,5 +1,6 @@
 """
-Doc str
+Copyright 2021 Patrick S. Worthey
+Orchestrates a hadoop + Hive + SQL cluster of docker nodes
 """
 import argparse
 import collections
@@ -15,16 +16,34 @@ import time
 # PyPI installed modules...
 import requests
 
+# The root directory of the playground repository
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+# The hadoop distribution path on the docker nodes
 HADOOP_HOME = '/himage/hadoop-3.3.0'
+
+# The hive distribution path on the docker nodes
 HIVE_HOME = '/himage/apache-hive-3.1.2-bin'
+
+# The sqoop distribution path on the docker nodes
 SQOOP_HOME = '/himage/sqoop-1.4.7.bin__hadoop-2.6.0'
+
+# The path of the docker-compose.yml file
 COMPOSE_FILE = os.path.join(ROOT_DIR, 'docker-compose.yml')
+
+# The non-secured sql password used on the sql node
 SQL_TEST_PASSWORD = 'myStrong(*)Password'
+
+# The number of data nodes in the cluster (this variable only affects health checks)
 NUM_DATA_NODES = 1
+
+# The number of node manager nodes in the cluster (this variable only affects health checks)
 NUM_NODE_MANAGERS = 1
+
+# The minimum amount of disk space each node requires to operate (applicable in health checks)
 MIN_DISK_SPACE = 8589934592 # 1GB
 
+# Exposed localhost ports for each of the nodes
 PORT_UI_NN1    = 3000
 PORT_UI_DN1    = 3001
 PORT_UI_RMAN   = 3002
@@ -33,6 +52,7 @@ PORT_UI_MRHIST = 3004
 PORT_UI_HS     = 3005
 PORT_SQL_SQL   = 3006
 
+# Descriptions of what each port does
 PORT_DOC = [
   (PORT_UI_NN1,    'http', 'Web UI for the primary name node'),
   (PORT_UI_DN1,    'http', 'Web UI for data node 1'),
@@ -43,16 +63,21 @@ PORT_DOC = [
   (PORT_SQL_SQL,   'sql (tcp/ip)', 'SQL server connection port')
 ]
 
+# A health checklist item description
 NodeHealthBeanCheck = collections.namedtuple('NodeHealthBeanCheck', \
   'bean_name prop_name check_func')
+
+# The status of a single node in the cluster
 NodeHealthReport = collections.namedtuple('NodeHealthReport', \
   'is_healthy message')
+
+# A summary of the status on each of the nodes in the cluster
 HealthReportSummary = collections.namedtuple('HealthReportSummary', \
   'cluster_healthy nn1 dn1 rman nm1 mrhist hs client sql')
 
 class Config:
   """
-  Doc str
+  Represents the configuration for any playground tasks
   """
   def __init__(self, project_name=None, source_dir=None, data_dir=None, volumes_dir=None):
     self.project_name = project_name
@@ -63,7 +88,7 @@ class Config:
   @property
   def project_name(self):
     """
-    Doc str
+    The project name used for the Docker-Compose project name
     """
     return self._project_name
 
@@ -74,7 +99,8 @@ class Config:
   @property
   def source_dir(self):
     """
-    Doc str
+    The local directory containing files to be uploaded to the client node /src directory upon 
+    setup.
     """
     return self._source_dir
 
@@ -88,7 +114,7 @@ class Config:
   @property
   def data_dir(self):
     """
-    Doc str
+    The local directory containing files to be ingested into HDFS upon setup.
     """
     return self._data_dir
 
@@ -102,7 +128,7 @@ class Config:
   @property
   def volumes_dir(self):
     """
-    Doc str
+    The local directory (which may not yet exist) where docker will persist files between runs.
     """
     return self._volumes_dir
 
@@ -115,7 +141,7 @@ class Config:
 
   def save(self, filename):
     """
-    Doc str
+    Saves the configuration to a file.
     """
     with open(filename, 'w') as _fp:
       json.dump({ \
@@ -128,7 +154,7 @@ class Config:
   @staticmethod
   def load(filename):
     """
-    Doc str
+    Loads the configuration from a file.
     """
     with open(filename, 'r') as _fp:
       _c = Config()
@@ -142,7 +168,7 @@ class Config:
 def exec_docker(config, node_name, command, workdir=None, \
   interactive=False, detached=False, check=True):
   """
-  doc str
+  Executes a command on a node through docker.
   """
   _args = ['docker', 'exec']
   if workdir:
@@ -170,26 +196,27 @@ def exec_docker(config, node_name, command, workdir=None, \
 
 def build_img(config):
   """
-  doc str
+  Builds or rebuilds the dockerfile images.
   """
   set_environment(config)
   os.system('docker-compose -p %s -f "%s" build' % (config.project_name, COMPOSE_FILE))
 
 def format_hdfs(config):
   """
-  doc str
+  Formats hdfs in the cluster.
   """
   exec_docker(config, 'nn1', '%s/bin/hdfs namenode -format -force clust' % (HADOOP_HOME))
 
 def ingest_data(config):
   """
-  doc str
+  Ingests data from the configured data volume into hdfs.
   """
   exec_docker(config, 'nn1', '%s/bin/hadoop fs -put /data /data' % (HADOOP_HOME))
 
 def copy_source(config):
   """
-  doc str
+  Copies from the configured local source directory to the source volume. 
+  Use to update the client node's /src folder on a running cluster when new code is written.
   """
   if not os.path.exists(config.source_dir):
     print('Source directory does not exist. Please check configuration and try again.')
@@ -202,7 +229,7 @@ def copy_source(config):
 
 def setup_hive(config):
   """
-  doc str
+  Makes required hdfs directories for hive to run and initializes the schema metastore.
   """
   fs_cmd = '%s/bin/hadoop fs ' % (HADOOP_HOME)
   exec_docker(config, 'nn1', fs_cmd + '-mkdir /tmp', check=False)
@@ -214,14 +241,14 @@ def setup_hive(config):
 
 def cluster_up(config):
   """
-  doc str
+  Boots the cluster up but does not run any of the daemons.
   """
   set_environment(config)
   os.system('docker-compose -p %s -f "%s" up -d' % (config.project_name, COMPOSE_FILE))
 
 def start_hadoop_daemons(config):
   """
-  doc str
+  Runs all daemons in the hadoop distribution on their respective nodes.
   """
   exec_docker(config, 'nn1', '%s/bin/hdfs --daemon start namenode' % (HADOOP_HOME))
   exec_docker(config, 'dn1', '%s/bin/hdfs --daemon start datanode' % (HADOOP_HOME))
@@ -231,21 +258,21 @@ def start_hadoop_daemons(config):
 
 def start_hive_server(config):
   """
-  doc str
+  Starts the hive server daemon.
   """
   exec_docker(config, 'hs', '%s/bin/hiveserver2' % (HIVE_HOME), \
     detached=True, workdir='/metastore')
 
 def cluster_down(config):
   """
-  doc str
+  Spins the cluster down.
   """
   set_environment(config)
   os.system('docker-compose -p %s -f "%s" down' % (config.project_name, COMPOSE_FILE))
 
 def metric_request(port):
   """
-  doc str
+  Sends an http request to a node's jmx endpoint. Returns the parsed json, or None on error.
   """
   try:
     _r = requests.get('http://localhost:%d/jmx' % (port))
@@ -258,20 +285,20 @@ def metric_request(port):
   except ValueError:
     return None
 
-def find_bean_by_type(jsn, typ):
+def find_bean_by_name(jsn, nme):
   """
-  doc str
+  Extracts a bean of the given name from jmx metrics json object.
   """
   if 'beans' not in jsn:
     return None
   else:
-    return next((b for b in jsn['beans'] if b['name'] == typ), None)
+    return next((b for b in jsn['beans'] if b['name'] == nme), None)
 
 def extract_bean_prop(jsn, bean_name, propname):
   """
-  doc str
+  Extracts a property of a bean of the given name from jmx metrics json object.
   """
-  bean = find_bean_by_type(jsn, bean_name)
+  bean = find_bean_by_name(jsn, bean_name)
   if bean and propname in bean:
     return bean[propname]
   else:
@@ -279,7 +306,7 @@ def extract_bean_prop(jsn, bean_name, propname):
 
 def gen_node_report_from_checks(jsn, checks):
   """
-  doc str
+  Creates a node health report using the jmx metrics json and a list of type NodeHealthBeanCheck
   """
   healthy = True
   messages = []
@@ -301,6 +328,9 @@ def gen_node_report_from_checks(jsn, checks):
   return NodeHealthReport(is_healthy=healthy, message=message)
 
 def _check_func_disk_space(prop_val):
+  """
+  A check function for comparing the prop_val to the expected disk space amount.
+  """
   return NodeHealthReport(is_healthy=True, message='Sufficient disk space.') \
     if prop_val >= MIN_DISK_SPACE else NodeHealthReport(is_healthy=False, message='Insufficient' \
       ' disk space. Minimum required disk space is %d. Remaining bytes: %d' % \
@@ -308,7 +338,7 @@ def _check_func_disk_space(prop_val):
 
 def json_checker_namenode(jsn):
   """
-  doc str
+  Checks the jmx metrics json for the namenode and returns a node health report
   """
   checks = [
     NodeHealthBeanCheck( \
@@ -357,7 +387,7 @@ def json_checker_namenode(jsn):
 
 def json_checker_datanode(jsn):
   """
-  doc str
+  Checks the jmx metrics json for the datanode and returns a node health report
   """
   checks = [
     NodeHealthBeanCheck( \
@@ -377,7 +407,7 @@ def json_checker_datanode(jsn):
 
 def json_checker_resourcemanager(jsn):
   """
-  doc str
+  Checks the jmx metrics json for the resource manager node and returns a node health report
   """
   checks = [
     NodeHealthBeanCheck( \
@@ -402,7 +432,7 @@ def json_checker_resourcemanager(jsn):
 
 def json_checker_response_only(jsn):
   """
-  doc str
+  Checks the jmx metrics json on any node that has jmx metrics but no other specific health checks
   """
   healthy = 'beans' in jsn and len(jsn['beans']) > 0
   if healthy:
@@ -414,7 +444,7 @@ def json_checker_response_only(jsn):
 
 def gen_node_health_report(jsn, json_checker_func):
   """
-  doc str
+  Generates a node health report using the json checker function
   """
   if jsn:
     return json_checker_func(jsn)
@@ -424,7 +454,7 @@ def gen_node_health_report(jsn, json_checker_func):
 
 def gen_docker_health_report(config, node_name):
   """
-  doc str
+  Generates a health report simply based on if the given node is running or not.
   """
   return_code = exec_docker(config, node_name, 'bash -c exit 0', check=False)
   if return_code == 0:
@@ -434,7 +464,7 @@ def gen_docker_health_report(config, node_name):
 
 def gen_health_summary(config):
   """
-  doc str
+  Generates a health report summary on the running cluster.
   """
   _name_node1 = gen_node_health_report(metric_request(PORT_UI_NN1), json_checker_namenode)
   _data_node1 = gen_node_health_report(metric_request(PORT_UI_DN1), json_checker_datanode)
@@ -468,7 +498,7 @@ def gen_health_summary(config):
 
 def print_node_health(report):
   """
-  doc str
+  Prints a node health report
   """
   if report is None:
     print('? Report not implemented.')
@@ -482,7 +512,7 @@ def print_node_health(report):
 
 def print_summary(summary):
   """
-  doc str
+  Prints a summary health report
   """
   print('NAME NODE 1')
   print_node_health(summary.nn1)
@@ -508,7 +538,7 @@ def print_summary(summary):
 
 def print_health(config):
   """
-  doc str
+  Prints the health of the cluster
   """
   print('Checking cluster health.')
   print()
@@ -517,7 +547,7 @@ def print_health(config):
 
 def wait_for_healthy_nodes_print(config, timeout):
   """
-  doc str
+  Blocks until all nodes are healthy or until timeout, and prints the results.
   """
   _start = time.time()
   summary = wait_for_healthy_nodes(config, timeout=timeout)
@@ -527,7 +557,7 @@ def wait_for_healthy_nodes_print(config, timeout):
 
 def get_summary_preview_str(summary):
   """
-  doc str
+  Gets a oneliner string displaying the summarized cluster health
   """
   _s = [
     ('nn1', summary.nn1.is_healthy),
@@ -545,7 +575,7 @@ def get_summary_preview_str(summary):
 
 def wait_for_healthy_nodes(config, timeout=200, interval=5):
   """
-  doc str
+  Blocks until all nodes are healthy or until timeout
   """
   _summary = None
   for _t in range(int(timeout / interval)):
@@ -559,7 +589,7 @@ def wait_for_healthy_nodes(config, timeout=200, interval=5):
 
 def setup(config):
   """
-  doc str
+  One-time setup for the cluster.
   """
   print('Destroying volumes.')
   destroy_volumes(config)
@@ -587,7 +617,7 @@ def setup(config):
 
 def print_port_doc():
   """
-  doc str
+  Prints documentation on the exposed ports.
   """
   print('Exposed ports on localhost:')
   for _p in PORT_DOC:
@@ -596,7 +626,7 @@ def print_port_doc():
 
 def start(config, wait=True):
   """
-  doc str
+  Boots up the cluster and starts all of the daemons on the cluster.
   """
   print('Spinning cluster up.')
   cluster_up(config)
@@ -615,14 +645,14 @@ def start(config, wait=True):
 
 def stop(config):
   """
-  doc str
+  Spins down the cluster.
   """
   print('Spinning cluster down.')
   cluster_down(config)
 
 def destroy_volumes(config):
   """
-  doc str
+  Removes the persistant file storage of the cluster.
   """
   print('Spinning cluster down.')
   cluster_down(config)
@@ -635,26 +665,26 @@ def destroy_volumes(config):
 
 def print_hadoop_node_logs(config, node_name):
   """
-  doc str
+  Prints the logs of the given hadoop node.
   """
   exec_docker(config, node_name, 'cat %s/logs/*.log')
 
 def beeline_cli(config):
   """
-  doc str
+  Launches an interactive cli on the client node with beeline cli.
   """
   exec_docker(config, 'client', '%s/bin/beeline -u jdbc:hive2://hs:10000' % (HIVE_HOME), \
     workdir='/src', interactive=True)
 
 def bash_cli(config, nodename):
   """
-  doc str
+  Launches an interactive bash shell on the given node.
   """
   exec_docker(config, nodename, 'bash', interactive=True)
 
 def sqlcmd_cli(config, local):
   """
-  doc str
+  Launches an interactive sql cli on the client node or local host if specified. 
   """
   if local:
     os.system('sqlcmd -S tcp:localhost,%d -U sa -P %s' % (PORT_SQL_SQL, SQL_TEST_PASSWORD))
@@ -664,7 +694,7 @@ def sqlcmd_cli(config, local):
 
 def sql_exec_query(config, query, database_name='master'):
   """
-  doc str
+  Executes an sql query from the client node.
   """
   exec_docker(config, 'client', '/opt/mssql-tools/bin/sqlcmd -S sql' \
     ' -U sa -d %s -P %s -q "%s"' % \
@@ -672,14 +702,14 @@ def sql_exec_query(config, query, database_name='master'):
 
 def sql_exec_file(config, filename):
   """
-  doc str
+  Executes an sql file from the source directory on the client node.
   """
   exec_docker(config, 'client', '/opt/mssql-tools/bin/sqlcmd -S sql -U sa -P %s -i "%s"' % \
       (SQL_TEST_PASSWORD, filename), workdir='/src')
 
 def sqoop_export(config, export_dir, sql_table, database_name='master', delimiter=','):
   """
-  doc str
+  Exports HDFS text delimited files to the sql node. 
   """
   exec_docker(config, 'client', '%s/bin/sqoop export --connect' \
     ' "jdbc:sqlserver://sql;databaseName=%s"' \
@@ -690,7 +720,7 @@ def sqoop_export(config, export_dir, sql_table, database_name='master', delimite
 
 def launch_ssms_win_local(executable_path):
   """
-  doc str
+  Launches Sql Server Management Studio locally.
   """
   if os.name == 'nt':
     if os.path.exists(executable_path):
@@ -707,22 +737,21 @@ def launch_ssms_win_local(executable_path):
 
 def exec_hive_file(config, src_file):
   """
-  doc str
+  Executes a hive script file from the source directory on the client node.
   """
   exec_docker(config, 'client', '%s/bin/beeline -u jdbc:hive2://hs:10000 -f %s' % \
     (HIVE_HOME, src_file), workdir='/src')
 
 def exec_hive_query(config, query):
   """
-  doc str
+  Executes a hive query from the client node.
   """
-  #exec_docker(config, 'client', "echo 'Hello world'")
   exec_docker(config, 'client', '%s/bin/beeline -u jdbc:hive2://hs:10000 -e "%s"' % \
     (HIVE_HOME, query), workdir='/src')
 
 def input_with_validator(prompt, failure_msg, validator_func):
   """
-  doc str
+  Prompts for interactive user input using a validator function.
   """
   while True:
     val = input(prompt)
@@ -733,33 +762,33 @@ def input_with_validator(prompt, failure_msg, validator_func):
 
 def validate_project_name(val):
   """
-  doc str
+  Input validator function for project name configuration.
   """
   pattern = re.compile(r'\W')
   return not pattern.search(val) and val.isalnum()
 
 def validate_directory(val):
   """
-  doc str
+  Input validator function for a directory name.
   """
   return os.path.exists(val)
 
 def validate_parent_directory(val):
   """
-  doc str
+  Input validator function for a directory name where only the parent directory needs to exist.
   """
   return os.path.exists(os.path.dirname(val))
 
 def validate_yn(val):
   """
-  doc str
+  Input validator function for yes/no prompts.
   """
   _l = val.lower()
   return _l == 'y' or _l == 'n'
 
 def set_environment(config):
   """
-  doc str
+  Sets the environment variables for consumption by docker-compose.
   """
   os.environ['project_name'] = config.project_name
   os.environ['source_dir'] = config.source_dir
@@ -769,7 +798,7 @@ def set_environment(config):
 
 def configure(args):
   """
-  doc str
+  Returns config using a file, arguments, or interactive input.
   """
   _f = args.config_file
   config = None
@@ -804,7 +833,7 @@ def configure(args):
 
 def configure_interactively():
   """
-  doc str
+  Creates a config from interactive input.
   """
   proj_name = input_with_validator( \
     'Please input your project name: ', \
@@ -831,61 +860,61 @@ def configure_interactively():
 
 def build_img_cmd(config, args):
   """
-  doc str
+  Command line function. See build_img() for documentation.
   """
   build_img(config)
 
 def format_hdfs_cmd(config, args):
   """
-  doc str
+  Command line function. See format_hdfs() for documentation.
   """
   format_hdfs(config)
 
 def ingest_data_cmd(config, args):
   """
-  doc str
+  Command line function. See ingest_data() for documentation.
   """
   ingest_data(config)
 
 def copy_source_cmd(config, args):
   """
-  doc str
+  Command line function. See copy_source() for documentation.
   """
   copy_source(config)
 
 def setup_hive_cmd(config, args):
   """
-  doc str
+  Command line function. See setup_hive() for documentation.
   """
   setup_hive(config)
 
 def cluster_up_cmd(config, args):
   """
-  doc str
+  Command line function. See cluster_up() for documentation.
   """
   cluster_up(config)
 
 def start_hadoop_daemons_cmd(config, args):
   """
-  doc str
+  Command line function. See start_hadoop_daemons() for documentation.
   """
   start_hadoop_daemons(config)
 
 def start_hive_server_cmd(config, args):
   """
-  doc str
+  Command line function. See start_hive_server() for documentation.
   """
   start_hive_server(config)
 
 def cluster_down_cmd(config, args):
   """
-  doc str
+  Command line function. See cluster_down() for documentation.
   """
   cluster_down(config)
 
 def setup_cmd(config, args):
   """
-  doc str
+  Command line function. See setup() for documentation.
   """
   if args.skip_confirm:
     setup(config)
@@ -903,19 +932,19 @@ def setup_cmd(config, args):
 
 def start_cmd(config, args):
   """
-  doc str
+  Command line function. See start() for documentation.
   """
   start(config, wait=not args.no_wait)
 
 def stop_cmd(config, args):
   """
-  doc str
+  Command line function. See stop() for documentation.
   """
   stop(config)
 
 def destroy_volumes_cmd(config, args):
   """
-  doc str
+  Command line function. See destroy_volumes() for documentation.
   """
   if args.skip_confirm:
     destroy_volumes(config)
@@ -933,49 +962,49 @@ def destroy_volumes_cmd(config, args):
 
 def print_hadoop_node_logs_cmd(config, args):
   """
-  doc str
+  Command line function. See print_hadoop_node_logs() for documentation.
   """
   print_hadoop_node_logs(config, args.node)
 
 def beeline_cli_cmd(config, args):
   """
-  doc str
+  Command line function. See beeline_cli() for documentation.
   """
   beeline_cli(config)
 
 def bash_cli_cmd(config, args):
   """
-  doc str
+  Command line function. See bash_cli() for documentation.
   """
   bash_cli(config, args.node)
 
 def sqlcmd_cli_cmd(config, args):
   """
-  doc str
+  Command line function. See sqlcmd_cli() for documentation.
   """
   sqlcmd_cli(config, args.local)
 
 def sql_exec_query_cmd(config, args):
   """
-  doc str
+  Command line function. See sql_exec_query() for documentation.
   """
   sql_exec_query(config, args.query, args.database)
 
 def sql_exec_file_cmd(config, args):
   """
-  doc str
+  Command line function. See sql_exec_file() for documentation.
   """
   sql_exec_file(config, args.filename)
 
 def sqoop_export_cmd(config, args):
   """
-  doc str
+  Command line function. See sqoop_export() for documentation.
   """
   sqoop_export(config, args.export_dir, args.sql_table, args.database_name, args.delimiter)
 
 def local_sql_info_cmd(config, args):
   """
-  doc str
+  Command line function. Prints out non-secured sql server connection info.
   """
   print('SERVER NAME: tcp:localhost,%d' % (PORT_SQL_SQL))
   print('AUTHENTICATION: SQL Server AUthentication')
@@ -984,43 +1013,43 @@ def local_sql_info_cmd(config, args):
 
 def launch_ssms_win_local_cmd(config, args):
   """
-  doc str
+  Command line function. See launch_ssms_win_local() for documentation.
   """
   launch_ssms_win_local(args.executable_path)
 
 def exec_hive_file_cmd(config, args):
   """
-  doc str
+  Command line function. See exec_hive_file() for documentation.
   """
   exec_hive_file(config, args.src_path)
 
 def exec_hive_query_cmd(config, args):
   """
-  doc str
+  Command line function. See exec_hive_query() for documentation.
   """
   exec_hive_query(config, args.query)
 
 def print_health_cmd(config, args):
   """
-  doc str
+  Command line function. See print_health() for documentation.
   """
   print_health(config)
 
 def wait_for_healthy_nodes_cmd(config, args):
   """
-  doc str
+  Command line function. See wait_for_healthy_nodes_print() for documentation.
   """
   wait_for_healthy_nodes_print(config, args.timeout)
 
 def get_config_file_needed(args):
   """
-  doc str
+  Determines whether or not we need to fetch additional config variables from a file.
   """
   return not (args.project_name and args.source_dir and args.data_dir and args.volumes_dir)
 
 def main():
   """
-  doc str
+  Main entry point for the program
   """
   parser = argparse.ArgumentParser(prog='playground', description='HDFS, Hive, and SQL Playground')
   parser.set_defaults(func=None)

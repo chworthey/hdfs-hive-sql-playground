@@ -1,5 +1,7 @@
 # HDFS & HIVE & SQL Playground
 
+Copyright 2021 Patrick S. Worthey
+
 This project uses Docker to spin up a virtual cluster of nodes which simulate an enterprise big data ELT infrastructure on a single host. This will enable the user to play around with Hadoop, Hive, and SQL Servers to facilitate learning of those technologies. This repository could also be used to serve the purposes of any infrastructure-specific testing in a CI/CD workflow (for example performance benchmarking analytics in a cluster that you administrate).
 
 This repository does:
@@ -8,13 +10,30 @@ This repository does:
 
 This repository does NOT:
 - Implement any sort of security or compliance standards
-- Integrate with 3p cloud solutions like Azure HDInsight or Azure Storage
+- Integrate with 3p cloud solutions
 
-## Disclaimers
+This repository has only been tested with Windows 10.
 
-This repository is for testing purposes only and there have been no cluster security measures taken.
+## Architecture
 
-This repository has only been tested on Windows 10. However it was built with other host platforms in mind.
+The data starts as files on your local machine and undergoes the following processes:
+
+Local file => HDFS ingestion => Hive transformations => SQL Server
+
+This project achieves this by hosting a cluster of nodes with Docker with the needed components installed. The nodes are as follows:
+
+Node Name | AKA | Description
+--- | --- | ---
+nn1 | Name Node 1 | The master node for the HDFS file system. (secondary name node / high availability is not implemented currently)
+dn1 | Data Node 1 | The slave node for the HDFS file system. (currently it's the only one but there could be many)
+rman | Resource Manager | The master node for YARN jobs. Manages cluster-wide resources for distributed work.
+nm1 | Node Manager 1 | Slave node for YARN jobs. Hosts application containers. There could be any number of node managers although right now there is just one. Furthermore, the node manager could be on the data nodes so the data does not need to travel but it doesn't really matter for this example.
+mrhist | Map Reduce History Server | Persists the map reduce job history.
+hs | Hive Server | Enables hive execution.
+client | Client Node | Represents a workspace that you work from using various cli's to interact with the cluster (like beeline for example).
+sql | SQL Server | A Microsoft SQL Server instance running on it's own node.
+
+To help orchestrate these nodes, `playground.py` comes to the rescue. It provides a commandline interface to configure, run, and interact with the node cluster.
 
 ## Install Docker
 
@@ -49,9 +68,42 @@ git add .gitattributes
 
 This project uses [pipenv](https://pypi.org/project/pipenv/) (optional)
 
-Alternatively, you can simply use [Python 3.9](https://www.python.org/downloads/release/python-390/). There are no PyPi packages needed.
+Alternatively, you can simply use [Python 3.9](https://www.python.org/downloads/release/python-390/). There are no PyPi packages needed other than `requests`.
 
-## Set up your playground project
+## Run Examples
+
+The `./examples` directory is the best place to start. Check the contents and then run:
+
+```sh
+pipenv shell
+cd ./examples
+python runall.py
+```
+Alternatively, you can use the `runall.ps1` script which is basically identical to `runall.py` in functionality.
+
+The 'runall' scripts will do the following:
+- Build the docker image (if first time)
+- Set up the cluster and ingest data from local files into HDFS
+- Start the cluster and wait for the nodes to reach full health
+- Execute a series of hive and sql scripts/inline queries
+- Sqoop export from HDFS to SQL
+- Spin down the cluster
+
+An example output of all the following can be found in `./examples/example-output.log`.
+
+If you want to play around with the cluster as it runs, the `config.json` file has been provided for convenience. You only need to `cd` into the examples directory to use it and then execute commands. For example:
+
+```sh
+cd ./examples
+python ../playground.py start
+python ../playground.py bash-cli -n client
+```
+
+## About the Example data
+
+The data found in `./examples/data` comes from the WSU astrophysics department (from my Dad) and contains the first couple entries for chemically peculiar (cp) and non-chemically peculiar (no-cp) stars. Hidden in the data might be a way to measure the age of stars based on the difference between cp and no-cp. I'll attempt to explain this better at a later time...
+
+## Incorporating into other projects
 
 Please create some folders wherever you please:
 
@@ -67,13 +119,22 @@ In your src, add any hive query files (.hql) or sql (.sql) query files you may w
 
 Place any data files (in subdirectories too if you wish) that should get ingested into HDFS during setup. This directory will be mounted as a readonly volume to one of the nodes. (Note: by ingesting into HDFS, you acknowledge that a complete copy of these files will exist within HDFS PERSISTANTLY, so don't go filling up your disk space with this!)
 
-### Examples
+Any run of playground.py outside of `./examples` and without configuration variables will prompt you to interactively input the configuration variables where you should place the src and data paths when prompted.
 
-Want to see an example of data and src? See: `./examples/tutorial/`
+## Configuration Variables
 
-## Initialize Nodes for first time
+Configuration can take the form of command-line arguments, config files, or direct Python manipulation. The project variables are as follows:
+- project_name: the base name of your docker cluster group for example `example`
+- source_dir: the relative or absolute path to the directory containing the hive/sql/etc. scripts you want copied to the cluster (on the client node) during the setup phase
+- data_dir: the relative or absolute path to the directory containing data files you want ingested into HDFS during the setup phase
+- volumes_dir: the relative or absolute path to a directory that may or may not exist which will contain persisted data from the cluster such that the data will remain even after the cluster has been torn down
 
-The setup command only needs to be run ONCE per project.
+## Normal Project Lifecycle
+
+This section details the order in which you normally execute the playground commands.
+
+### Setup
+The setup command generally only needs to be run ONCE per project, and it will destroy persistant volumes you have, if any.
 
 Make sure Docker for Windows is running ([with Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)).
 
@@ -86,7 +147,7 @@ The python script will interactively prompt you for your project name and your s
 
 Then, it will attempt to provision the cluster (format hdfs, ingest data, etc).
 
-## Boot Cluster for Playground Use
+### Boot Cluster for Playground Use
 
 When you want to play around with the cluster, run:
 ```
@@ -97,11 +158,7 @@ And when you want to tear down the cluster:
 python playground.py stop
 ```
 
-## Playing in the Playground
-
-Your `src` directory gets copied into (TODO: Finish this section)
-
-## Destroying the Volumes
+### Destroying the Volumes
 
 If you want to start fresh (delete all the volumes), go ahead and run:
 
@@ -112,3 +169,21 @@ And then if you want to reprovision the cluster for more use, run:
 ```
 python playground.py setup
 ```
+
+## Things I wish I had more time to address
+
+### Tez
+
+The execution engine for this project is the old map reduce system, but tez would the more modern approach.
+
+### More nodes
+
+Currently I only have one of each, but it would be interesting to compare performance in several distributed scenarios.
+
+### Hive SQL-based Metastore
+
+Currently I only use Derby for the metastore database, but it would be better to use some sql-based server.
+
+### Sqoop --hcatalog
+
+In order to use sqoop right now, the files have to be delimited text. I meant to use the --hcatalog argument to handle the ORC deserialization for the SQL tables and easier Hive integration, but it seems there's an issue with the derby metastore, so I haven't gotten around to it.
