@@ -2,6 +2,8 @@
 
 Copyright 2021 Patrick S. Worthey
 
+Think of this like a homemade Apache Ambari for testing purposes, kind of.
+
 This project uses Docker to spin up a virtual cluster of nodes which simulate an enterprise big data ELT infrastructure on a single host. This will enable the user to play around with Hadoop, Hive, and SQL Servers to facilitate learning of those technologies. This repository could also be used to serve the purposes of any infrastructure-specific testing in a CI/CD workflow (for example performance benchmarking analytics in a cluster that you administrate).
 
 This repository does:
