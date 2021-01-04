@@ -33,7 +33,7 @@ nm1 | Node Manager 1 | Slave node for YARN jobs. Hosts application containers. T
 mrhist | Map Reduce History Server | Persists the map reduce job history.
 hs | Hive Server | Enables hive execution.
 client | Client Node | Represents a workspace that you work from using various cli's to interact with the cluster (like beeline for example).
-sql | SQL Server | A Microsoft SQL Server instance running on it's own node.
+sql | SQL Server | A Microsoft SQL Server instance running on its own node.
 
 To help orchestrate these nodes, `playground.py` comes to the rescue. It provides a commandline interface to configure, run, and interact with the node cluster.
 
